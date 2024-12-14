@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "22930153229",
+    "firebase_url": "https://mehery-75d3b-default-rtdb.firebaseio.com",
+    "project_id": "mehery-75d3b",
+    "storage_bucket": "mehery-75d3b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22930153229:android:5d93e7450bd04240e4da44",
+        "android_client_info": {
+          "package_name": "com.example.example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "22930153229-ppren53d2mmelgp5bbc08hnl05io87hf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjeVU3mUXHjJgNObF3T6QctN15oR_Zo2g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "22930153229-ppren53d2mmelgp5bbc08hnl05io87hf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22930153229:android:eeb58af31dba9f16e4da44",
+        "android_client_info": {
+          "package_name": "com.mehery.admin.mehery_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "22930153229-ppren53d2mmelgp5bbc08hnl05io87hf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjeVU3mUXHjJgNObF3T6QctN15oR_Zo2g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "22930153229-ppren53d2mmelgp5bbc08hnl05io87hf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
