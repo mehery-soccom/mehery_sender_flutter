@@ -32,8 +32,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final MeSend _tokenSender = MeSend(
-    serverUrl: 'https://d571-45-112-40-254.ngrok-free.app', // Replace with your server URL
+  final MeSend _tokenSender = MeSend( // Replace with your server URL
     companyId : 'MeheryTestFlutter_1734160381705'
   );
 

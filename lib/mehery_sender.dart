@@ -4,14 +4,17 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 import 'package:app_set_id/app_set_id.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MeSend {
-  final String serverUrl;
+  final String serverUrl = "https://b85b-45-112-40-8.ngrok-free.app";
   final String companyId;
+  WebSocketChannel? _channel;
 
-  MeSend({required this.serverUrl, required this.companyId});
+
+  MeSend({required this.companyId});
 
   /// Initializes the SDK and sends the appropriate token (Firebase or APNs).
   Future<void> initializeAndSendToken() async {
@@ -20,6 +23,30 @@ class MeSend {
 
       // Request notification permissions (necessary for iOS)
       await messaging.requestPermission();
+
+      // Get the device_id
+      final deviceId = await getDeviceId();
+      if (deviceId == null) {
+        throw Exception("Failed to retrieve device_id");
+      }
+
+      // Establish WebSocket connection
+      _channel = IOWebSocketChannel.connect('wss://b85b-45-112-40-8.ngrok-free.app/ws?device_id=$deviceId');
+
+
+      // Listen for incoming messages
+      _channel?.stream.listen(
+            (message) {
+          print('Received: $message');
+          // Handle incoming messages here
+        },
+        onError: (error) {
+          print('WebSocket error: $error');
+        },
+        onDone: () {
+          print('WebSocket connection closed');
+        },
+      );
 
       if (Platform.isAndroid) {
         // Get Firebase token for Android
@@ -124,5 +151,23 @@ class MeSend {
   Future<String?> getDeviceId() async {
     return await AppSetId().getIdentifier();
   }
+
+
+  /// Send data through WebSocket
+  Future<void> sendData(dynamic data) async {
+    if (_channel != null) {
+      _channel!.sink.add(jsonEncode(data));
+    } else {
+      throw Exception("WebSocket connection is not established.");
+    }
+  }
+
+  /// Close WebSocket connection
+  Future<void> closeConnection() async {
+    if (_channel != null) {
+      await _channel!.sink.close();
+    }
+  }
+
 }
 
