@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="J6p-g8-CHO">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Notification View Controller-->
+        <scene sceneID="Niz-0G-mK9">
+            <objects>
+                <viewController id="J6p-g8-CHO" customClass="NotificationViewController" customModule="NotificationContentExtension" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZX3-uf-5w2">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="Ygd-dc-Qxe">
+                                <rect key="frame" x="16" y="8" width="288" height="64"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="h5f-Ug-JmN">
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="64"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" ambiguous="YES" text="Pickup in 2 min" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kf2-5v-7Kh">
+                                                <rect key="frame" x="0.0" y="0.0" width="200" height="35"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" ambiguous="YES" text="3XFH2C • Silver Honda Civic" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xgf-Nm-2Hc">
+                                                <rect key="frame" x="0.0" y="39" width="200" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="jK9-qH-haD">
+                                                <rect key="frame" x="0.0" y="60" width="200" height="4"/>
+                                            </progressView>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="QZc-C9-ghe">
+                                        <rect key="frame" x="212" y="0.0" width="76" height="64"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uxf-dh-JGf">
+                                                <rect key="frame" x="0.0" y="0.0" width="40" height="64"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="8gX-ep-aXD"/>
+                                                    <constraint firstAttribute="width" constant="40" id="vNh-g2-3Kd"/>
+                                                </constraints>
+                                            </imageView>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="hgK-La-f3Z">
+                                                <rect key="frame" x="48" y="0.0" width="28" height="64"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="28" id="0fY-h2-dNe"/>
+                                                    <constraint firstAttribute="height" constant="28" id="wgf-Ux-e5L"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Axv-Zh-OYc"/>
+                        <color key="backgroundColor" systemColor="systemPurpleColor"/>
+                        <constraints>
+                            <constraint firstItem="Ygd-dc-Qxe" firstAttribute="leading" secondItem="Axv-Zh-OYc" secondAttribute="leading" constant="16" id="5gH-Yb-h8f"/>
+                            <constraint firstItem="Axv-Zh-OYc" firstAttribute="trailing" secondItem="Ygd-dc-Qxe" secondAttribute="trailing" constant="16" id="Jf2-h8-K2M"/>
+                            <constraint firstItem="Ygd-dc-Qxe" firstAttribute="top" secondItem="ZX3-uf-5w2" secondAttribute="top" constant="8" id="bQf-dg-XcN"/>
+                            <constraint firstAttribute="bottom" secondItem="Ygd-dc-Qxe" secondAttribute="bottom" constant="8" id="yHg-f5-gK2"/>
+                        </constraints>
+                    </view>
+                    <size key="freeformSize" width="320" height="80"/>
+                    <connections>
+                        <outlet property="carImageView" destination="hgK-La-f3Z" id="car-outlet"/>
+                        <outlet property="driverImageView" destination="Uxf-dh-JGf" id="driver-outlet"/>
+                        <outlet property="progressView" destination="jK9-qH-haD" id="progress-outlet"/>
+                        <outlet property="titleLabel" destination="Kf2-5v-7Kh" id="title-outlet"/>
+                        <outlet property="vehicleInfoLabel" destination="xgf-Nm-2Hc" id="vehicle-outlet"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vXp-U4-Rya" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="140" y="4"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemPurpleColor">
+            <color red="0.68627450980000004" green="0.32156862749999998" blue="0.87058823529999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

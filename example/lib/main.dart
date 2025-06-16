@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:mehery_sender/mehery_sender.dart';
 
 void main() async {
@@ -32,8 +35,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  static const MethodChannel _channel = MethodChannel('com.yourapp/live_activity');
+
   final MeSend _tokenSender = MeSend( // Replace with your server URL
-    companyId : 'MeheryTestFlutter_1734160381705'
+    identifier : 'MeheryTestFlutter_1734160381705'
   );
 
   @override
@@ -65,10 +70,51 @@ class _HomePageState extends State<HomePage> {
             }, child: const Text("Login")),
             ElevatedButton(onPressed: (){
               _tokenSender.logout("ABCD");
-            }, child: const Text("Logout"))
+            }, child: const Text("Logout")),
+            ElevatedButton(
+              onPressed: () async {
+                print("🚀 Starting Live Activity...");
+                await startLiveActivity(); // start it and wait until it completes
+
+                await Future.delayed(const Duration(seconds: 3)); // wait for 3 seconds
+
+                print("🟢 Updating Live Activity...");
+                await update(); // now update it
+              },
+              child: const Text("Live Activity"),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> startLiveActivity() async {
+    try {
+      final result = await _channel.invokeMethod('startLiveActivity', {
+        'rideId': 'ride001',
+        'etaMinutes': 5,
+        'driverName': 'Sam',
+        'carModel': 'Silver Civic',
+        'licensePlate': 'XYZ 1234',
+        'progress': 0.1,
+      });
+      print('Live Activity started: $result');
+    } catch (e) {
+      print('Error starting Live Activity: $e');
+    }
+  }
+
+  Future<void> update() async {
+    print("📦 update() called");
+    try {
+      final result = await _channel.invokeMethod('updateLiveActivity', {
+        'etaMinutes': 2,
+        'progress': 0.6,
+      });
+      print('Live Activity updated: $result');
+    } catch (e) {
+      print('Error updating Live Activity: $e');
+    }
   }
 }
