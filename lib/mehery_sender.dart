@@ -20,8 +20,8 @@ import 'package:flutter/widgets.dart';
 
 
 class MeSend {
-  final String serverUrl = "https://8b94-35-179-222-157.ngrok-free.app";
-  // final String serverUrl = "https://demo.mehery.xyz";
+  // final String serverUrl = "https://8b94-35-179-222-157.ngrok-free.app";
+  final String serverUrl = "https://demo.mehery.xyz";
 
   final String tenant;
   final String channelId;
