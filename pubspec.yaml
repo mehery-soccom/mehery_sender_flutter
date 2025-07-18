@@ -43,3 +43,6 @@ flutter:
 
   assets:
     - lib/android/res/layout/
+
+false_secrets:
+  - example/ios/Runner/GoogleService-Info.plist
