@@ -20,11 +20,13 @@ import 'package:flutter/widgets.dart';
 
 
 class MeSend {
-  final String serverUrl = "";
+  late final String serverUrl;
+
   // final String serverUrl = "https://demo.mehery.xyz";
 
   final String tenant;
   final String channelId;
+  bool sandbox = false;
   String userId = "";
   String guestId = "";
   BuildContext? buildContext = null;
@@ -39,9 +41,10 @@ class MeSend {
   static const _channel = MethodChannel('mehery_channel');
 
   // Updated constructor to handle tenant$channelId format
-  MeSend({required String identifier}) :
+  MeSend({required String identifier, bool sandbox = false}) :
         tenant = identifier.split('\$')[0],
         channelId = identifier.split('\$').length > 1 ? identifier.split('\$')[1] : '' {
+    this.sandbox = sandbox;
     serverUrl = 'https://$tenant.mehery.${sandbox ? "xyz" : "com"}';
     if (channelId.isEmpty) {
       throw ArgumentError('Invalid identifier format. Expected format: tenant\$channelId');
@@ -223,7 +226,7 @@ class MeSend {
 
   void _setupSocket(String userId) {
     print("SocketStarted : $userId");
-    _socketService.connect(userId);
+    _socketService.connect(userId,tenant,channelId,sandbox);
 
     _socketService.notificationStream.listen((notification) {
       print("Received notification: $notification");
@@ -625,21 +628,27 @@ class SocketService {
   String? _userId;
   bool _isConnected = false;
   Timer? _reconnectTimer;
+  String? _tenant;
+  String? _channelId;
+  bool _sandbox = false;
 
   // Stream controller for notifications
   final _notificationController = StreamController<Map<String, dynamic>>.broadcast();
   Stream<Map<String, dynamic>> get notificationStream => _notificationController.stream;
 
   // Connect to WebSocket
-  void connect(String userId) {
+  void connect(String userId,String tenant,String channelId,bool sandbox) {
     _userId = userId;
+    _tenant = tenant;
+    _channelId = channelId;
+    _sandbox = sandbox;
     _connectToSocket();
   }
 
   void _connectToSocket() {
     try {
       // Replace with your actual WebSocket URL
-      final wsUrl = 'wss://$tenant.mehery.${sandbox ? "xyz" : "com"}/pushapp';
+      final wsUrl = 'wss://$_tenant.mehery.${_sandbox ? "xyz" : "com"}/pushapp';
       _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
 
       // Send authentication message
