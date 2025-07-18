@@ -3,6 +3,6 @@
 * TODO: Describe initial release.
 
 
-## [0.0.2] - 2025-07-18
+## [0.0.3] - 2025-07-18
 
 - Initial release with basic features.
