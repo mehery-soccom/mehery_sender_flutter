@@ -13,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/widgets.dart';
 
@@ -34,7 +33,6 @@ class MeSend {
   final MeSendRouteObserver meSendRouteObserver = MeSendRouteObserver();
 
   final SocketService _socketService = SocketService();
-  bool _isConnected = false;
 
   static final DeviceInfoPlugin _deviceInfoPlugin = DeviceInfoPlugin();
 
@@ -53,25 +51,14 @@ class MeSend {
     meSendRouteObserver.attachSDK(this);
   }
 
-  Future<void> _loadSavedUser() async {
-    print("Started Load");
-    final prefs = await SharedPreferences.getInstance();
-    userId = prefs.getString('user_id')!;
-    print("Saved User ID");
-    print(userId);
-    if(!userId.isEmpty && userId != ""){
-      sendEvent("app_open", {"channel_id": channelId});
-    }
-  }
-
   /// Initializes the SDK and sends the appropriate token (Firebase or APNs).
   Future<void> initializeAndSendToken() async {
-    print("Started Load");
+    debugPrint("Started Load");
     setupMethodChannelHandler();
     final prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('user_id') ?? '';
-    print("Saved User ID");
-    print(userId);
+    debugPrint("Saved User ID");
+    debugPrint(userId);
     if(!userId.isEmpty && userId != ""){
       sendEvent("app_open", {"channel_id": channelId});
     }else{
@@ -84,7 +71,7 @@ class MeSend {
         if (Platform.isAndroid) {
           // Get Firebase token for Android
           String? firebaseToken = await messaging.getToken();
-          print(firebaseToken);
+          debugPrint(firebaseToken);
           if (firebaseToken != null) {
             await sendTokenToServer('android', firebaseToken);
           } else {
@@ -93,7 +80,7 @@ class MeSend {
         } else if (Platform.isIOS) {
           // Get APNs token for iOS
           String? apnsToken = await messaging.getAPNSToken();
-          print("APNS TOKEN "+apnsToken!);
+          debugPrint("APNS TOKEN "+apnsToken!);
           if (apnsToken != null) {
             await sendTokenToServer('ios', apnsToken);
           } else {
@@ -103,7 +90,7 @@ class MeSend {
           throw UnsupportedError("Unsupported platform.");
         }
       } catch (e) {
-        print("Error initializing FirebaseTokenSender: $e");
+        debugPrint("Error initializing FirebaseTokenSender: $e");
       }
     }
   }
@@ -128,12 +115,12 @@ class MeSend {
       );
 
       if (response.statusCode == 200) {
-        print('Notification event tracked successfully.');
+        debugPrint('Notification event tracked successfully.');
       } else {
-        print('Failed to track event: ${response.statusCode} ${response.body}');
+        debugPrint('Failed to track event: ${response.statusCode} ${response.body}');
       }
     } catch (e) {
-      print('Error tracking notification event: $e');
+      debugPrint('Error tracking notification event: $e');
     }
   }
 
@@ -141,11 +128,11 @@ class MeSend {
   /// Sends the token (APNs or Firebase) to the server.
   Future<void> sendTokenToServer(String tokenType, String token) async {
     try {
-      print('Server URL : '+'$serverUrl/pushapp/api/register');
+      debugPrint('Server URL : '+'$serverUrl/pushapp/api/register');
       var device_id = await getDeviceId();
       final deviceHeaders = await getDeviceHeaders();
-      print("ServerDeviceID");
-      print(device_id);
+      debugPrint("ServerDeviceID");
+      debugPrint(device_id);
       final response = await http.post(
         Uri.parse('$serverUrl/pushapp/api/register'),
         headers: {
@@ -162,19 +149,19 @@ class MeSend {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print(response.body);
+        debugPrint(response.body);
         if (responseData['device']['user_id'] != null) {
           this.guestId = responseData['device']['user_id'].toString();
         }
-        print("guest_id");
-        print(guestId);
+        debugPrint("guest_id");
+        debugPrint(guestId);
         this.sendEvent("app_open", {});
-        print("Token sent successfully!");
+        debugPrint("Token sent successfully!");
       } else {
         throw Exception("Failed to send token: ${response.body}");
       }
     } catch (e) {
-      print("Error sending token to server: $e");
+      debugPrint("Error sending token to server: $e");
     }
   }
 
@@ -185,8 +172,8 @@ class MeSend {
       this.userId = userId;
       var device_id = await getDeviceId();
       final deviceHeaders = await getDeviceHeaders();
-      print("LoginDeviceID");
-      print(device_id);
+      debugPrint("LoginDeviceID");
+      debugPrint(device_id);
       final response = await http.post(
         Uri.parse('$serverUrl/pushapp/api/register/user'),
         headers: {
@@ -201,7 +188,7 @@ class MeSend {
       );
 
       if (response.statusCode == 200) {
-        print("User registered successfully!");
+        debugPrint("User registered successfully!");
         _setupSocket(userId);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_id', userId);
@@ -209,36 +196,36 @@ class MeSend {
         throw Exception("Failed to register user: ${response.body}");
       }
     } catch (e) {
-      print("Error registering user: $e");
+      debugPrint("Error registering user: $e");
     }
   }
 
   void setInAppNotification(BuildContext context){
     if (context is Element && context.mounted) {
       buildContext = context;
-      print("In-app context set!");
+      debugPrint("In-app context set!");
     } else {
-      print("Context not mounted yet");
+      debugPrint("Context not mounted yet");
     }
     this.buildContext = context;
   }
 
 
   void _setupSocket(String userId) {
-    print("SocketStarted : $userId");
+    debugPrint("SocketStarted : $userId");
     _socketService.connect(userId,tenant,channelId,sandbox);
 
     _socketService.notificationStream.listen((notification) {
-      print("Received notification: $notification");
+      debugPrint("Received notification: $notification");
 
       final data = notification['data'];
 
       // ✅ CHECK FOR RULE-TRIGGERED MESSAGE FIRST
       final messageType = data['message_type'];
       if (messageType == 'rule_triggered') {
-        print("RULE_TRIGGERED: Processing rule-based notification");
+        debugPrint("RULE_TRIGGERED: Processing rule-based notification");
         final ruleId = data['rule_id'];
-        print("Rule ID: $ruleId");
+        debugPrint("Rule ID: $ruleId");
 
         // Call the poll endpoint to get actual notification data
         _pollForNotificationData(ruleId);
@@ -252,7 +239,7 @@ class MeSend {
 
   Future<void> _pollForNotificationData(String ruleId) async {
     try {
-      print("Polling for notification data with rule ID: $ruleId");
+      debugPrint("Polling for notification data with rule ID: $ruleId");
 
       // Make HTTP request to poll endpoint
       final response = await http.post(
@@ -265,28 +252,28 @@ class MeSend {
         }),
       );
 
-      print("Poll response status: ${response.statusCode}");
-      print("Poll response body: ${response.body}");
+      debugPrint("Poll response status: ${response.statusCode}");
+      debugPrint("Poll response body: ${response.body}");
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print("Poll response data: $responseData");
+        debugPrint("Poll response data: $responseData");
 
         if (responseData['success'] == true) {
           final notificationData = responseData['data'];
-          print("Received notification data: $notificationData");
+          debugPrint("Received notification data: $notificationData");
 
           // Process the notification data using existing logic
           _processNotificationData(notificationData);
         } else {
-          print("Poll failed: ${responseData['message']}");
+          debugPrint("Poll failed: ${responseData['message']}");
         }
       } else {
-        print("Poll request failed with status: ${response.statusCode}");
-        print("Response body: ${response.body}");
+        debugPrint("Poll request failed with status: ${response.statusCode}");
+        debugPrint("Response body: ${response.body}");
       }
     } catch (e) {
-      print("Error polling for notification data: $e");
+      debugPrint("Error polling for notification data: $e");
     }
   }
 
@@ -297,10 +284,10 @@ class MeSend {
     final contentList = template?['data']?['content'] ?? [];
     final style = data['style'] ?? {};
 
-    print("Processing notification data - Type: $type");
+    debugPrint("Processing notification data - Type: $type");
 
     if (type == 'popup') {
-      print("POPUP");
+      debugPrint("POPUP");
       if (contentList.isNotEmpty && buildContext != null) {
         _showPopupRoadblock(contentList, buildContext!);
       }
@@ -308,7 +295,7 @@ class MeSend {
 
     // ✅ Banner Handler
     if (type == 'popout-banner') {
-      print("BANNER");
+      debugPrint("BANNER");
       final align = (style['align'] ?? 'top').toString();
       if (contentList.isNotEmpty && buildContext != null) {
         _showBanner(contentList, buildContext!, align: align);
@@ -388,7 +375,7 @@ class MeSend {
 
   void _showBanner(List<dynamic> contentList, BuildContext context, {String align = "top"}) {
     if (contentList.isEmpty || contentList.first is! String) {
-      print("No banner HTML found.");
+      debugPrint("No banner HTML found.");
       return;
     }
 
@@ -441,7 +428,7 @@ class MeSend {
     }
 
     if (htmlContent.isEmpty && imageUrl.isEmpty) {
-      print("No valid content (HTML or image) found.");
+      debugPrint("No valid content (HTML or image) found.");
       return;
     }
 
@@ -518,7 +505,7 @@ class MeSend {
 
     try {
       final deviceHeaders = await getDeviceHeaders();
-      print(jsonEncode({
+      debugPrint(jsonEncode({
         'user_id': _userId,
         'channel_id': channelId,
         'event_name': eventName,
@@ -539,12 +526,12 @@ class MeSend {
       );
 
       if (response.statusCode == 200) {
-        print("Event sent successfully!");
+        debugPrint("Event sent successfully!");
       } else {
         throw Exception("Failed to send event: ${response.body}");
       }
     } catch (e) {
-      print("Error sending event: $e");
+      debugPrint("Error sending event: $e");
     }
   }
 
@@ -567,12 +554,12 @@ class MeSend {
       );
 
       if (response.statusCode == 200) {
-        print("User logged out successfully!");
+        debugPrint("User logged out successfully!");
       } else {
         throw Exception("Failed to log out user: ${response.body}");
       }
     } catch (e) {
-      print("Error logging out user: $e");
+      debugPrint("Error logging out user: $e");
     }
   }
 
@@ -660,18 +647,18 @@ class SocketService {
           _handleMessage(message);
         },
         onError: (error) {
-          print('Socket error: $error');
+          debugPrint('Socket error: $error');
           _handleDisconnection();
         },
         onDone: () {
-          print('Socket connection closed');
+          debugPrint('Socket connection closed');
           _handleDisconnection();
         },
       );
 
       _isConnected = true;
     } catch (e) {
-      print('Error connecting to socket: $e');
+      debugPrint('Error connecting to socket: $e');
       _handleDisconnection();
     }
   }
@@ -693,21 +680,21 @@ class SocketService {
         switch (data['type']) {
           case 'auth':
             if (data['status'] == 'success') {
-              print('Socket authenticated successfully');
+              debugPrint('Socket authenticated successfully');
             } else {
-              print('Socket authentication failed: ${data['message']}');
+              debugPrint('Socket authentication failed: ${data['message']}');
             }
             break;
           case 'in_app':
             _notificationController.add(data);
             break;
           case 'error':
-            print('Socket error: ${data['message']}');
+            debugPrint('Socket error: ${data['message']}');
             break;
         }
       }
     } catch (e) {
-      print('Error handling message: $e');
+      debugPrint('Error handling message: $e');
     }
   }
 
@@ -755,7 +742,7 @@ class MeSendRouteObserver extends NavigatorObserver {
             previousRoute!.toString();
         _meSend!.sendEvent("page_closed", {"page": previousPageName});
       }
-      print("SDK: Page Opened -> $pageName");
+      debugPrint("SDK: Page Opened -> $pageName");
       _meSend!.sendEvent("page_open", {"page": pageName});
     }
 
@@ -766,7 +753,7 @@ class MeSendRouteObserver extends NavigatorObserver {
   void didPop(Route route, Route? previousRoute) {
     if(_meSend != null) {
       final pageName = route.settings.name ?? route.toString();
-      print("SDK: Page Closed -> $pageName");
+      debugPrint("SDK: Page Closed -> $pageName");
       _meSend!.sendEvent("page_closed", {"page": pageName});
     }
   }
@@ -776,7 +763,7 @@ class MeSendRouteObserver extends NavigatorObserver {
     if(_meSend != null) {
       if (newRoute != null) {
         final pageName = newRoute!.settings.name ?? newRoute!.toString();
-        print("SDK: Page Replaced -> $pageName");
+        debugPrint("SDK: Page Replaced -> $pageName");
         _meSend!.sendEvent("page_open", {"page": pageName});
       }
       if (oldRoute != null) {
