@@ -20,8 +20,8 @@ import 'package:flutter/widgets.dart';
 
 
 class MeSend {
-  // final String serverUrl = "https://8b94-35-179-222-157.ngrok-free.app";
-  final String serverUrl = "https://demo.mehery.xyz";
+  final String serverUrl = "";
+  // final String serverUrl = "https://demo.mehery.xyz";
 
   final String tenant;
   final String channelId;
@@ -36,11 +36,13 @@ class MeSend {
 
   static final DeviceInfoPlugin _deviceInfoPlugin = DeviceInfoPlugin();
 
+  static const _channel = MethodChannel('mehery_channel');
+
   // Updated constructor to handle tenant$channelId format
   MeSend({required String identifier}) :
         tenant = identifier.split('\$')[0],
         channelId = identifier.split('\$').length > 1 ? identifier.split('\$')[1] : '' {
-
+    serverUrl = 'https://$tenant.mehery.${sandbox ? "xyz" : "com"}';
     if (channelId.isEmpty) {
       throw ArgumentError('Invalid identifier format. Expected format: tenant\$channelId');
     }
@@ -62,6 +64,7 @@ class MeSend {
   /// Initializes the SDK and sends the appropriate token (Firebase or APNs).
   Future<void> initializeAndSendToken() async {
     print("Started Load");
+    setupMethodChannelHandler();
     final prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('user_id') ?? '';
     print("Saved User ID");
@@ -101,6 +104,36 @@ class MeSend {
       }
     }
   }
+
+
+  void setupMethodChannelHandler() {
+    _channel.setMethodCallHandler((call) async {
+      if (call.method == 'trackNotification') {
+        final args = call.arguments as Map;
+        final token = args['token'] as String;
+        final eventType = args['eventType'] as String;
+        await trackNotificationEvent(token, eventType);
+      }
+    });
+  }
+
+  Future<void> trackNotificationEvent(String token, String eventType) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$serverUrl/pushapp/api/v2/notification/track?t='+token+'&eventType=opened'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification event tracked successfully.');
+      } else {
+        print('Failed to track event: ${response.statusCode} ${response.body}');
+      }
+    } catch (e) {
+      print('Error tracking notification event: $e');
+    }
+  }
+
 
   /// Sends the token (APNs or Firebase) to the server.
   Future<void> sendTokenToServer(String tokenType, String token) async {
@@ -178,7 +211,12 @@ class MeSend {
   }
 
   void setInAppNotification(BuildContext context){
-    print(context);
+    if (context is Element && context.mounted) {
+      buildContext = context;
+      print("In-app context set!");
+    } else {
+      print("Context not mounted yet");
+    }
     this.buildContext = context;
   }
 
@@ -191,35 +229,95 @@ class MeSend {
       print("Received notification: $notification");
 
       final data = notification['data'];
-      final type = data['type'];
-      final template = data['template'];
-      final contentList = template?['data']?['content'] ?? [];
-      final style = data['style'] ?? {};
 
-      if (type == 'popup') {
-        print("POPUP");
-        if (contentList.isNotEmpty && buildContext != null) {
-          _showPopupRoadblock(contentList, buildContext!);
-        }
+      // ✅ CHECK FOR RULE-TRIGGERED MESSAGE FIRST
+      final messageType = data['message_type'];
+      if (messageType == 'rule_triggered') {
+        print("RULE_TRIGGERED: Processing rule-based notification");
+        final ruleId = data['rule_id'];
+        print("Rule ID: $ruleId");
+
+        // Call the poll endpoint to get actual notification data
+        _pollForNotificationData(ruleId);
+        return; // Exit early, don't process as regular notification
       }
 
-      // ✅ New case: Banner Handler
-      if (type == 'popout-banner') {
-        print("BANNER");
-        final align = (style['align'] ?? 'top').toString();
-        if (contentList.isNotEmpty && buildContext != null) {
-          _showBanner(contentList, buildContext!, align: align);
-        }
-      }
-
-      if (type == 'popout-pip') {
-        final align = (style['align'] ?? 'bottom-right').toString();
-        if (contentList.isNotEmpty && buildContext != null) {
-          _showPip(contentList, buildContext!, align: align);
-        }
-      }
-
+      // ✅ PROCESS DIRECT NOTIFICATIONS (existing logic)
+      _processNotificationData(data);
     });
+  }
+
+  Future<void> _pollForNotificationData(String ruleId) async {
+    try {
+      print("Polling for notification data with rule ID: $ruleId");
+
+      // Make HTTP request to poll endpoint
+      final response = await http.post(
+        Uri.parse('$serverUrl/pushapp/api/poll/in-app'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'rule_id': ruleId,
+        }),
+      );
+
+      print("Poll response status: ${response.statusCode}");
+      print("Poll response body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        print("Poll response data: $responseData");
+
+        if (responseData['success'] == true) {
+          final notificationData = responseData['data'];
+          print("Received notification data: $notificationData");
+
+          // Process the notification data using existing logic
+          _processNotificationData(notificationData);
+        } else {
+          print("Poll failed: ${responseData['message']}");
+        }
+      } else {
+        print("Poll request failed with status: ${response.statusCode}");
+        print("Response body: ${response.body}");
+      }
+    } catch (e) {
+      print("Error polling for notification data: $e");
+    }
+  }
+
+// ✅ NEW: Method to process notification data (extracted from existing logic)
+  void _processNotificationData(Map<String, dynamic> data) {
+    final type = data['type'];
+    final template = data['template'];
+    final contentList = template?['data']?['content'] ?? [];
+    final style = data['style'] ?? {};
+
+    print("Processing notification data - Type: $type");
+
+    if (type == 'popup') {
+      print("POPUP");
+      if (contentList.isNotEmpty && buildContext != null) {
+        _showPopupRoadblock(contentList, buildContext!);
+      }
+    }
+
+    // ✅ Banner Handler
+    if (type == 'popout-banner') {
+      print("BANNER");
+      final align = (style['align'] ?? 'top').toString();
+      if (contentList.isNotEmpty && buildContext != null) {
+        _showBanner(contentList, buildContext!, align: align);
+      }
+    }
+
+    if (type == 'popout-pip') {
+      final align = (style['align'] ?? 'bottom-right').toString();
+      if (contentList.isNotEmpty && buildContext != null) {
+        _showPip(contentList, buildContext!, align: align);
+      }
+    }
   }
 
 
@@ -239,11 +337,12 @@ class MeSend {
       'bottom-right': Alignment.bottomRight,
     }[align] ?? Alignment.bottomRight;
 
+    // ✅ Show dialog directly
     showDialog(
       context: context,
       barrierDismissible: true,
       barrierColor: Colors.transparent,
-      builder: (context) => Stack(
+      builder: (ctx) => Stack(
         children: [
           Align(
             alignment: alignment,
@@ -266,8 +365,7 @@ class MeSend {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(16),
                           onTap: () {
-                            print("TAPPED");
-                            Navigator.of(context).pop();
+                            Navigator.of(ctx).pop();
                             _showPopupRoadblock([htmlContent], context);
                           },
                         ),
@@ -282,6 +380,8 @@ class MeSend {
       ),
     );
   }
+
+
 
   void _showBanner(List<dynamic> contentList, BuildContext context, {String align = "top"}) {
     if (contentList.isEmpty || contentList.first is! String) {
@@ -539,7 +639,7 @@ class SocketService {
   void _connectToSocket() {
     try {
       // Replace with your actual WebSocket URL
-      final wsUrl = 'wss://8b94-35-179-222-157.ngrok-free.app/pushapp';
+      final wsUrl = 'wss://$tenant.mehery.${sandbox ? "xyz" : "com"}/pushapp';
       _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
 
       // Send authentication message
