@@ -14,7 +14,6 @@ import 'dart:async';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter/widgets.dart';
 
 
 
@@ -28,7 +27,7 @@ class MeSend {
   bool sandbox = false;
   String userId = "";
   String guestId = "";
-  BuildContext? buildContext = null;
+  BuildContext? buildContext;
 
   final MeSendRouteObserver meSendRouteObserver = MeSendRouteObserver();
 
@@ -39,10 +38,9 @@ class MeSend {
   static const _channel = MethodChannel('mehery_channel');
 
   // Updated constructor to handle tenant$channelId format
-  MeSend({required String identifier, bool sandbox = false}) :
+  MeSend({required String identifier, this.sandbox = false}) :
         tenant = identifier.split('\$')[0],
         channelId = identifier.split('\$').length > 1 ? identifier.split('\$')[1] : '' {
-    this.sandbox = sandbox;
     serverUrl = 'https://$tenant.mehery.${sandbox ? "xyz" : "com"}';
     if (channelId.isEmpty) {
       throw ArgumentError('Invalid identifier format. Expected format: tenant\$channelId');
@@ -59,7 +57,7 @@ class MeSend {
     userId = prefs.getString('user_id') ?? '';
     debugPrint("Saved User ID");
     debugPrint(userId);
-    if(!userId.isEmpty && userId != ""){
+    if(userId.isNotEmpty && userId != ""){
       sendEvent("app_open", {"channel_id": channelId});
     }else{
       try {
@@ -80,12 +78,8 @@ class MeSend {
         } else if (Platform.isIOS) {
           // Get APNs token for iOS
           String? apnsToken = await messaging.getAPNSToken();
-          debugPrint("APNS TOKEN "+apnsToken!);
-          if (apnsToken != null) {
-            await sendTokenToServer('ios', apnsToken);
-          } else {
-            throw Exception("Failed to retrieve APNs token on iOS.");
-          }
+          debugPrint("APNS TOKEN ${apnsToken!}");
+          await sendTokenToServer('ios', apnsToken);
         } else {
           throw UnsupportedError("Unsupported platform.");
         }
@@ -110,7 +104,7 @@ class MeSend {
   Future<void> trackNotificationEvent(String token, String eventType) async {
     try {
       final response = await http.post(
-        Uri.parse('$serverUrl/pushapp/api/v2/notification/track?t='+token+'&eventType=opened'),
+        Uri.parse('$serverUrl/pushapp/api/v2/notification/track?t=$token&eventType=opened'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -128,11 +122,11 @@ class MeSend {
   /// Sends the token (APNs or Firebase) to the server.
   Future<void> sendTokenToServer(String tokenType, String token) async {
     try {
-      debugPrint('Server URL : '+'$serverUrl/pushapp/api/register');
-      var device_id = await getDeviceId();
+      debugPrint('Server URL : $serverUrl/pushapp/api/register');
+      var deviceId = await getDeviceId();
       final deviceHeaders = await getDeviceHeaders();
       debugPrint("ServerDeviceID");
-      debugPrint(device_id);
+      debugPrint(deviceId);
       final response = await http.post(
         Uri.parse('$serverUrl/pushapp/api/register'),
         headers: {
@@ -142,7 +136,7 @@ class MeSend {
         body: jsonEncode({
           'platform': tokenType, // 'firebase' or 'apns'
           'token': token,
-          'device_id' : device_id,
+          'device_id' : deviceId,
           'channel_id': channelId
         }),
       );
@@ -151,11 +145,11 @@ class MeSend {
         final responseData = jsonDecode(response.body);
         debugPrint(response.body);
         if (responseData['device']['user_id'] != null) {
-          this.guestId = responseData['device']['user_id'].toString();
+          guestId = responseData['device']['user_id'].toString();
         }
         debugPrint("guest_id");
         debugPrint(guestId);
-        this.sendEvent("app_open", {});
+        sendEvent("app_open", {});
         debugPrint("Token sent successfully!");
       } else {
         throw Exception("Failed to send token: ${response.body}");
@@ -170,10 +164,10 @@ class MeSend {
   Future<void> login(String userId) async {
     try {
       this.userId = userId;
-      var device_id = await getDeviceId();
+      var deviceId = await getDeviceId();
       final deviceHeaders = await getDeviceHeaders();
       debugPrint("LoginDeviceID");
-      debugPrint(device_id);
+      debugPrint(deviceId);
       final response = await http.post(
         Uri.parse('$serverUrl/pushapp/api/register/user'),
         headers: {
@@ -182,7 +176,7 @@ class MeSend {
         },
         body: jsonEncode({
           'user_id': userId,
-          'device_id' : device_id,
+          'device_id' : deviceId,
           'channel_id': channelId
         }),
       );
@@ -207,13 +201,13 @@ class MeSend {
     } else {
       debugPrint("Context not mounted yet");
     }
-    this.buildContext = context;
+    buildContext = context;
   }
 
 
   void _setupSocket(String userId) {
     debugPrint("SocketStarted : $userId");
-    _socketService.connect(userId,tenant,channelId,sandbox);
+    _socketService.connect(userId,tenant,sandbox);
 
     _socketService.notificationStream.listen((notification) {
       debugPrint("Received notification: $notification");
@@ -342,7 +336,7 @@ class MeSend {
               margin: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [BoxShadow(blurRadius: 8, color: Colors.black26)],
+                boxShadow: const [BoxShadow(blurRadius: 8, color: Colors.black26)],
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
@@ -454,7 +448,7 @@ class MeSend {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Scaffold(
-          backgroundColor: Colors.black.withOpacity(0.8),
+          backgroundColor: const Color.fromRGBO(0, 0, 0, 0.8),
           body: SafeArea(
             child: Stack(
               children: [
@@ -475,12 +469,12 @@ class MeSend {
                   top: 16,
                   right: 16,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.black,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.close, color: Colors.white, size: 30),
+                      icon: const Icon(Icons.close, color: Colors.white, size: 30),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
@@ -498,15 +492,15 @@ class MeSend {
 
   Future<void> sendEvent(String eventName, Map<String, dynamic> eventData) async {
 
-    var _userId = this.guestId;
-    if(this.userId != null && userId != ""){
-      _userId = this.userId;
+    var userId = guestId;
+    if(userId != ""){
+      userId = userId;
     }
 
     try {
       final deviceHeaders = await getDeviceHeaders();
       debugPrint(jsonEncode({
-        'user_id': _userId,
+        'user_id': userId,
         'channel_id': channelId,
         'event_name': eventName,
         'event_data': eventData,
@@ -518,7 +512,7 @@ class MeSend {
           ...deviceHeaders,
         },
         body: jsonEncode({
-          'user_id': _userId,
+          'user_id': userId,
           'channel_id': channelId,
           'event_name': eventName,
           'event_data': eventData,
@@ -539,7 +533,7 @@ class MeSend {
   /// Sends the token (APNs or Firebase) to the server.
   Future<void> logout(String userId) async {
     try {
-      var device_id = await getDeviceId();
+      var deviceId = await getDeviceId();
       final deviceHeaders = await getDeviceHeaders();
       final response = await http.post(
         Uri.parse('$serverUrl/pushapp/api/logout'),
@@ -549,7 +543,7 @@ class MeSend {
         },
         body: jsonEncode({
           'user_id': userId,
-          'device_id' : device_id
+          'device_id' : deviceId
         }),
       );
 
@@ -616,7 +610,6 @@ class SocketService {
   bool _isConnected = false;
   Timer? _reconnectTimer;
   String? _tenant;
-  String? _channelId;
   bool _sandbox = false;
 
   // Stream controller for notifications
@@ -624,10 +617,9 @@ class SocketService {
   Stream<Map<String, dynamic>> get notificationStream => _notificationController.stream;
 
   // Connect to WebSocket
-  void connect(String userId,String tenant,String channelId,bool sandbox) {
+  void connect(String userId,String tenant,bool sandbox) {
     _userId = userId;
     _tenant = tenant;
-    _channelId = channelId;
     _sandbox = sandbox;
     _connectToSocket();
   }
@@ -738,8 +730,8 @@ class MeSendRouteObserver extends NavigatorObserver {
     if(_meSend != null) {
       final pageName = route.settings.name ?? route.toString();
       if (previousRoute != null) {
-        final previousPageName = previousRoute!.settings.name ??
-            previousRoute!.toString();
+        final previousPageName = previousRoute.settings.name ??
+            previousRoute.toString();
         _meSend!.sendEvent("page_closed", {"page": previousPageName});
       }
       debugPrint("SDK: Page Opened -> $pageName");
@@ -762,13 +754,13 @@ class MeSendRouteObserver extends NavigatorObserver {
   void didReplace({Route? newRoute, Route? oldRoute}) {
     if(_meSend != null) {
       if (newRoute != null) {
-        final pageName = newRoute!.settings.name ?? newRoute!.toString();
+        final pageName = newRoute.settings.name ?? newRoute.toString();
         debugPrint("SDK: Page Replaced -> $pageName");
         _meSend!.sendEvent("page_open", {"page": pageName});
       }
       if (oldRoute != null) {
-        final previousPageName = oldRoute!.settings.name ??
-            oldRoute!.toString();
+        final previousPageName = oldRoute.settings.name ??
+            oldRoute.toString();
         _meSend!.sendEvent("page_closed", {"page": previousPageName});
       }
 
