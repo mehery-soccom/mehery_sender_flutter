@@ -65,19 +65,14 @@ Set the BuildContext for rendering in-app notifications:
 meSend.setInAppNotification(context);
 ```
 
-### 8. Route tracking
-Add meSend.meSendRouteObserver to your app’s navigatorObservers list for automatic page open/close events:
+### 7. Initialize page for In-app on specific pages
 ```dart
-MaterialApp(
-  navigatorObservers: [meSend.meSendRouteObserver],
-  // ...
-)
+tokenSender.initPage("page_name");
 ```
+
 
 ## Notes
  - Make sure to set BuildContext before expecting in-app notifications to display properly.
-
- - The WebSocket will reconnect automatically if disconnected.
 
  - Supports popup, banner, and PiP notifications rendered via WebView or image.
 
