@@ -10,3 +10,12 @@
 ## 0.0.8
 - Fixed null assertion warnings
 - Minor improvements
+
+
+## 0.0.9
+- Fixed null assertion warnings
+- Minor improvements
+
+## 0.0.10
+- Fixed null assertion warnings
+- Minor improvements

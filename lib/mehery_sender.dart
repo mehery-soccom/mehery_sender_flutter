@@ -14,6 +14,10 @@ import 'dart:async';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:super_tooltip/super_tooltip.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 
 
@@ -24,92 +28,6 @@ class MeSend {
   bool _isProcessingQueue = false;
 
   var mockJson = r'''
-{
-    "success": true,
-    "meta": {},
-    "results": [
-        {
-            "messageId": "aeeec3ef-7245-415c-ac51-c732847bd82a",
-            "filterId": "6895739b1ff48f6f5b2f516f",
-            "channelId": "demo_1751694691225",
-            "contactId": "xyz_77A5BDA7-BFC6-4C6A-8340-FF0E99390AD0",
-            "eventId": "6895cbd55e57299cfe3c54b6",
-            "event": {
-                "event_name": "page_open",
-                "event_data": {
-                    "page": "login"
-                }
-            },
-            "template": {
-                "options": {
-                    "buttons": []
-                },
-                "model": {
-                    "data": []
-                },
-                "_id": "6895739b1ff48f6f5b2f516d",
-                "type": "pop-up",
-                "subType": "roadblock",
-                "desc": "mark 11",
-                "code": "mark_11",
-                "lang": "en_US",
-                "style": {
-                    "code": "bottomsheet",
-                    "title": "",
-                    "message": "",
-                    "line_1": "suit mark 11",
-                    "line_2": "",
-                    "line_3": "",
-                    "height": 80,
-                    "width": 80,
-                    "btn": [
-                        {
-                            "label": "",
-                            "value": "",
-                            "desc": ""
-                        },
-                        {
-                            "label": "",
-                            "value": "",
-                            "desc": ""
-                        }
-                    ],
-                    "image_url": "",
-                    "logo_url": "",
-                    "button1_url": "",
-                    "button2_url": "",
-                    "line1_font_size": 18,
-                    "line2_font_size": 16,
-                    "line3_font_size": null,
-                    "line1_font_color": "#F42222",
-                    "line2_font_color": "#F42222",
-                    "line3_font_color": "",
-                    "line1_font_text_styles": [],
-                    "line2_font_text_styles": [],
-                    "line3_font_text_styles": [],
-                    "bg_color": "#BEBDBD",
-                    "bg_color_gradient": "#F6F4F4",
-                    "bg_color_gradient_dir": "to bottom",
-                    "progress_color": "",
-                    "align": "center",
-                    "line1_text_styles": [
-                        "bold"
-                    ],
-                    "btn_bg_color": "#B8E4BF",
-                    "btn_font_color": "#000000",
-                    "line2_text_styles": [
-                        "underline"
-                    ],
-                    "vertical_align": "center",
-                    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Carousel Roadblock</title>\n  <style>\n    html, body {\n      margin: 0;\n      padding: 0;\n      width: 100%;\n      height: 100%;\n      overflow: hidden;\n      background: #ffffff;\n      font-family: sans-serif;\n    }\n    .carousel-container {\n      display: flex;\n      overflow-x: scroll;\n      scroll-snap-type: x mandatory;\n      width: 100%;\n      height: 100%;\n    }\n    .carousel-page {\n      flex: 0 0 100%;\n      height: 100%;\n      scroll-snap-align: center;\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      align-items: center;\n      padding: 20px;\n      box-sizing: border-box;\n    }\n    .carousel-page img {\n      max-width: 80%;\n      height: auto;\n      max-height: 50%;\n      margin-bottom: 20px;\n      object-fit: contain;\n    }\n    .carousel-page h2 {\n      font-size: 2rem;\n      margin: 10px 0;\n      text-align: center;\n    }\n    .carousel-page p {\n      font-size: 1rem;\n      color: #555;\n      text-align: center;\n    }\n    .dots {\n      position: absolute;\n      bottom: 20px;\n      left: 50%;\n      transform: translateX(-50%);\n      display: flex;\n      gap: 8px;\n    }\n    .dot {\n      width: 10px;\n      height: 10px;\n      background: #ccc;\n      border-radius: 50%;\n    }\n    .dot.active {\n      background: #333;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"carousel-container\" id=\"carousel\">\n    <div class=\"carousel-page\">\n      <img src=\"https://fastly.picsum.photos/id/888/200/200.jpg?hmac=k4DxIkJ_O8YKi3TA5I9xxJYJzqpSvx3QmJlgZwHMojo\" alt=\"Welcome\">\n      <h2>Welcome</h2>\n      <p>Discover new features in our app.</p>\n    </div>\n    <div class=\"carousel-page\">\n      <img src=\"https://fastly.picsum.photos/id/1021/200/200.jpg?hmac=5Jzd15OWoPw0fwvsvL05A1BAIN_B543TvjlxqGk1PDU\" alt=\"Stay Updated\">\n      <h2>Stay Updated</h2>\n      <p>Enable notifications to never miss out.</p>\n    </div>\n    <div class=\"carousel-page\">\n      <img src=\"https://fastly.picsum.photos/id/802/200/200.jpg?hmac=alfo3M8Ps4XWmFJGIwuzLUqOrwxqkE5_f65vCtk6_Iw\" alt=\"Explore\">\n      <h2>Explore</h2>\n      <p>Find content tailored just for you.</p>\n    </div>\n  </div>\n  <div class=\"dots\">\n    <div class=\"dot active\" id=\"dot0\"></div>\n    <div class=\"dot\" id=\"dot1\"></div>\n    <div class=\"dot\" id=\"dot2\"></div>\n  </div>\n  <script>\n    const carousel = document.getElementById('carousel');\n    const dots = [document.getElementById('dot0'), document.getElementById('dot1'), document.getElementById('dot2')];\n    carousel.addEventListener('scroll', () => {\n      const index = Math.round(carousel.scrollLeft / window.innerWidth);\n      dots.forEach((dot, i) => dot.classList.toggle('active', i === index));\n    });\n  </script>\n</body>\n</html>"
-                },
-                "createdAt": "2025-08-08T03:48:43.576Z",
-                "updatedAt": "2025-08-08T03:48:43.576Z",
-                "__v": 0
-            }
-        }       
-    ]
-}
 ''';
 
   // final String serverUrl = "https://demo.mehery.xyz";
@@ -132,6 +50,11 @@ class MeSend {
 
   final Map<String, void Function(List<dynamic>)> _placeholderListeners = {};
 
+  final _controller = StreamController<Map<String, dynamic>>.broadcast();
+  Stream<Map<String, dynamic>> get events => _controller.stream;
+
+  // MeSend._internal();
+
 
 
   // Updated constructor to handle tenant$channelId format
@@ -139,6 +62,16 @@ class MeSend {
         tenant = identifier.split('\$')[0],
         channelId = identifier.split('\$').length > 1 ? identifier.split('\$')[1] : '' {
     serverUrl = 'https://$tenant.pushapp.${sandbox ? "co.in" : "com"}';
+
+    const eventChannel = EventChannel("mesend_event_channel");
+
+    eventChannel.receiveBroadcastStream().listen((data) {
+      if (data is Map) {
+        final event = Map<String, dynamic>.from(data);
+        _controller.add(event);
+        track(event);
+      }
+    });
     // serverUrl = 'https://8e5aebdbe23d.ngrok-free.app';
     if (channelId.isEmpty) {
       throw ArgumentError('Invalid identifier format. Expected format: tenant\$channelId');
@@ -146,6 +79,29 @@ class MeSend {
 
     meSendRouteObserver.attachSDK(this);
   }
+
+  Future<void> track(Map<String, dynamic> event) async {
+    final url = Uri.parse("https://demo.pushapp.co.in/pushapp/api/v1/notification/push/track");
+
+    final token = event["t"] ?? event["token"] ?? userId;
+    final eventName = event["event"];
+    final ctaId = event["ctaId"];
+
+    if (token == null || eventName == null) return;
+
+    final body = {
+      "t": token,
+      "event": eventName,
+      "data": ctaId != null ? {"ctaId": ctaId} : {}
+    };
+
+    await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+  }
+
 
   void registerPlaceholderListener(String placeholderId, void Function(List<dynamic>) callback) {
     _placeholderListeners[placeholderId] = callback;
@@ -162,7 +118,7 @@ class MeSend {
   void initPage(String page){
     sdkPrint("in sdk init page");
     sendEvent("page_open", {"page": page});
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 2), () {
       _pollForNotificationData(userId);
     });
   }
@@ -172,13 +128,40 @@ class MeSend {
     sdkPrint("Started Load");
 
     setupMethodChannelHandler();
+    sendEvent("app_open", {});
     final prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('user_id') ?? '';
+    String? lastToken = prefs.getString('device_token');
 
     // ✅ If user already logged in, do nothing
     if (userId.isNotEmpty) {
       sdkPrint("User already logged in: $userId");
       _setupSocket(userId); // optional: just to reconnect socket
+      // If user not logged in, send token
+      try {
+        FirebaseMessaging messaging = FirebaseMessaging.instance;
+        await messaging.requestPermission();
+
+        if (Platform.isAndroid) {
+          String? firebaseToken = await messaging.getToken();
+          if (firebaseToken != null && lastToken != firebaseToken) {
+            await updateDeviceToken(firebaseToken);
+          } else {
+            sdkPrint("Failed to retrieve Firebase token on Android.");
+          }
+        } else if (Platform.isIOS) {
+          String? apnsToken = await messaging.getAPNSToken();
+          if (apnsToken != null) {
+            await updateDeviceToken(apnsToken);
+          } else {
+            sdkPrint("Failed to retrieve APNs token on iOS.");
+          }
+        } else {
+          sdkPrint("Unsupported platform.");
+        }
+      } catch (e) {
+        sdkPrint("Error initializing FirebaseTokenSender: $e");
+      }
       return;
     }
 
@@ -190,12 +173,14 @@ class MeSend {
       if (Platform.isAndroid) {
         String? firebaseToken = await messaging.getToken();
         if (firebaseToken != null) {
-          await sendTokenToServer('android', firebaseToken);
+          await prefs.setString('device_token', firebaseToken);
+          await sendTokenToServer('android', firebaseToken!);
         } else {
           sdkPrint("Failed to retrieve Firebase token on Android.");
         }
       } else if (Platform.isIOS) {
         String? apnsToken = await messaging.getAPNSToken();
+        await prefs.setString('device_token', apnsToken!);
         if (apnsToken != null) {
           await sendTokenToServer('ios', apnsToken);
         } else {
@@ -211,22 +196,22 @@ class MeSend {
 
 
   Future<void> sendMessageToStack(String message) async{
-    const slackWebhookUrl = "https://hooks.slack.com/services/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";
-
-    final payload = {
-      "text": message
-    };
-
-    final res = await http.post(
-      Uri.parse(slackWebhookUrl),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(payload),
-    );
-
-    if (res.statusCode != 200) {
-      sdkPrint("Failed to send message to Slack: ${res.body}");
-      throw Exception("Failed to send message to Slack: ${res.body}");
-    }
+    // const slackWebhookUrl = "https://hooks.slack.com/services/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";
+    //
+    // final payload = {
+    //   "text": message
+    // };
+    //
+    // final res = await http.post(
+    //   Uri.parse(slackWebhookUrl),
+    //   headers: {"Content-Type": "application/json"},
+    //   body: jsonEncode(payload),
+    // );
+    //
+    // if (res.statusCode != 200) {
+    //   sdkPrint("Failed to send message to Slack: ${res.body}");
+    //   throw Exception("Failed to send message to Slack: ${res.body}");
+    // }
   }
 
 
@@ -237,60 +222,74 @@ class MeSend {
     required dynamic requestBody,
     required http.Response response,
   }) async {
-    const slackWebhookUrl = "https://hooks.slack.com/services/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";
-
-    final payload = {
-      "text": """
-*API Call Details:*
-• *URL*: $url
-• *Method*: $method
-• *Request Headers*: ${jsonEncode(requestHeaders)}
-• *Request Body*: ${jsonEncode(requestBody)}
-• *Response Status*: ${response.statusCode}
-• *Response Body*: ${response.body}
-• *Response Headers*: ${jsonEncode(response.headers)}
-"""
-    };
-
-    final res = await http.post(
-      Uri.parse(slackWebhookUrl),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(payload),
-    );
-
-    if (res.statusCode != 200) {
-      sdkPrint("Failed to send message to Slack: ${res.body}");
-      throw Exception("Failed to send message to Slack: ${res.body}");
-    }
+//     const slackWebhookUrl = "https://hooks.slack.com/services/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";
+//
+//     final payload = {
+//       "text": """
+// *API Call Details:*
+// • *URL*: $url
+// • *Method*: $method
+// • *Request Headers*: ${jsonEncode(requestHeaders)}
+// • *Request Body*: ${jsonEncode(requestBody)}
+// • *Response Status*: ${response.statusCode}
+// • *Response Body*: ${response.body}
+// • *Response Headers*: ${jsonEncode(response.headers)}
+// """
+//     };
+//
+//     final res = await http.post(
+//       Uri.parse(slackWebhookUrl),
+//       headers: {"Content-Type": "application/json"},
+//       body: jsonEncode(payload),
+//     );
+//
+//     if (res.statusCode != 200) {
+//       sdkPrint("Failed to send message to Slack: ${res.body}");
+//       throw Exception("Failed to send message to Slack: ${res.body}");
+//     }
   }
 
   void setupMethodChannelHandler() {
     _channel.setMethodCallHandler((call) async {
       if (call.method == 'trackNotification') {
-        final args = call.arguments as Map;
+        final args = Map<String, dynamic>.from(call.arguments as Map);
+
         final token = args['token'] as String;
-        final eventType = args['eventType'] as String;
-        await trackNotificationEvent(token, eventType);
+        final event = args['event'] as String; // changed from eventType → event
+        final ctaId = args['ctaId'] as String?;
+
+        await trackNotificationEvent(token, event, ctaId: ctaId);
       }
     });
   }
 
-  Future<void> trackNotificationEvent(String token, String eventType) async {
+
+  Future<void> trackNotificationEvent(String token, String event, {String? ctaId}) async {
+    final url = Uri.parse('$serverUrl/pushapp/api/v1/notification/push/track');
+
+    final body = {
+      't': token,
+      'event': event,
+      if (ctaId != null) 'data': {'ctaId': ctaId},
+    };
+
     try {
       final response = await http.post(
-        Uri.parse('$serverUrl/pushapp/api/v2/notification/track?t=$token&eventType=opened'),
+        url,
         headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
       );
 
       if (response.statusCode == 200) {
-        sdkPrint('Notification event tracked successfully.');
+        sdkPrint('✅ Notification event "$event" tracked successfully.');
       } else {
-        sdkPrint('Failed to track event: ${response.statusCode} ${response.body}');
+        sdkPrint('❌ Failed to track event ($event): ${response.statusCode} ${response.body}');
       }
     } catch (e) {
-      sdkPrint('Error tracking notification event: $e');
+      sdkPrint('❌ Error tracking notification event: $e');
     }
   }
+
 
 
   /// Sends the token (APNs or Firebase) to the server and logs details to Slack.
@@ -329,7 +328,6 @@ class MeSend {
           guestId = responseData['device']['user_id'].toString();
         }
         sdkPrint("guest_id: $guestId");
-        sendEvent("app_open", {});
         sdkPrint("Token sent successfully!");
       } else {
         sdkPrint("Failed to send token: ${response.body}");
@@ -350,6 +348,38 @@ class MeSend {
       // postApiDetailsToSlack(url: '$serverUrl/pushapp/api/register', method: deviceId, requestHeaders: requestHeaders, requestBody: requestBody, response: response);
     }
   }
+
+
+  Future<void> updateDeviceToken(String token) async {
+    sdkPrint("🔄 updateDeviceToken() called");
+    final url = '$serverUrl/pushapp/api/update/token';
+
+    var deviceId = await getDeviceId();
+    final contactId = "${userId}_$deviceId";
+
+    try {
+      final requestBody = {
+        'contact_id': contactId,
+        'token': token,
+        'channel_id': channelId,
+      };
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        sdkPrint("✅ Token updated successfully on server.");
+      } else {
+        sdkPrint("❌ Failed to update token: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      sdkPrint("🔥 Error updating device token: $e");
+    }
+  }
+
 
 
   /// Acknowledges an in-app notification and logs details to Slack.
@@ -510,8 +540,7 @@ class MeSend {
     try {
       var deviceId = await getDeviceId();
       if (Platform.isIOS) {
-        final iosInfo = await _deviceInfoPlugin.iosInfo;
-        deviceId = iosInfo.identifierForVendor ?? '';
+        deviceId = deviceId ?? '';
       }
       final deviceHeaders = await getDeviceHeaders();
       final contactId = "${userId}_$deviceId";
@@ -545,10 +574,53 @@ class MeSend {
           final results = responseData['results'];
 
           if (results is List && results.isNotEmpty) {
+            bool tooltipShown = false;
             for (final item in results) {
-              _notificationQueue.add(item);
+              try {
+                final style = item["template"]?["style"];
+                final code = style?["code"];
+                final compareId = item["event"]?["event_data"]?["compare"];
+                final messageId = item['messageId'] ?? '';
+
+                // ✅ Check for tooltip template
+                if (code == "tooltip" && compareId != null) {
+                  // Push into TooltipSdk
+                  sdk.processApiResponse({
+                    "results": [item]
+                  });
+                  await Future.delayed(const Duration(seconds: 2));
+                  // Optionally trigger show immediately
+                  tooltipShown = true;
+                  await sdk.showTooltipFor(compareId);
+
+                  var deviceId = await getDeviceId();
+                  if (Platform.isIOS) {
+                    deviceId = deviceId ?? '';
+                  }
+                  final contactId = "${userId}_$deviceId";
+
+                  // 🔔 Immediately send ACK for the notification
+                  if (messageId.isNotEmpty && contactId.isNotEmpty) {
+                    await ackNotification(contactId, messageId);
+                  }
+
+                  sdk.onTooltipDismissedCallback = () {
+                    sdkPrint("Tooltip dismissed callback fired → processing queue");
+                    _processNextFromQueue();
+                    sdk.onTooltipDismissedCallback = null; // cleanup
+                  };
+                } else {
+                  // Non-tooltip → push to your existing notification queue
+                  _notificationQueue.add(item);
+                  await Future.delayed(Duration(seconds: 1));
+                }
+              } catch (e) {
+                sdkPrint("Error processing result item: $e");
+              }
             }
-            _processNextFromQueue();
+            if(!tooltipShown) {
+              _processNextFromQueue();
+            }
           } else {
             sdkPrint("No new notifications from poll — keeping existing queue.");
           }
@@ -568,7 +640,6 @@ class MeSend {
         requestBody: requestBody,
         response: response,
       );
-
     } catch (e) {
       sdkPrint("Error polling for notification data: $e");
 
@@ -582,6 +653,7 @@ class MeSend {
       );
     }
   }
+
 
   void _onNotificationClosed() {
     _isProcessingQueue = false;
@@ -604,6 +676,7 @@ class MeSend {
   }
 
   String getAlignment(Map<String, dynamic> style) {
+    sdkPrint(style.toString());
     final vertical = (style['vertical_align'] ?? 'flex-end').toString();
     final horizontal = (style['horizontal_align'] ?? 'flex-end').toString();
 
@@ -646,16 +719,16 @@ class MeSend {
     final htmlContent = data['template']?['style']?['html'] ?? '';
     final contentList = htmlContent.isNotEmpty ? [htmlContent] : [];
 
-    final style = data['style'] ?? {};
+    final style = data['template']?['style'] ?? {};
 
     sdkPrint("Processing notification data - Type: $type");
 
     // ✅ Get contact_id and messageId for ACK
     final messageId = data['messageId'] ?? '';
+    final filterId = data['filterId'] ?? '';
     var deviceId = await getDeviceId();
     if (Platform.isIOS) {
-      final iosInfo = await _deviceInfoPlugin.iosInfo;
-      deviceId = iosInfo.identifierForVendor ?? '';
+      deviceId = deviceId ?? '';
     }
     final contactId = "${userId}_$deviceId";
 
@@ -669,40 +742,44 @@ class MeSend {
         type.toLowerCase().contains('roadblock-image')) {
       sdkPrint("POPUP or ROADBLOCK");
       if (contentList.isNotEmpty && buildContext != null) {
-        _showPopupRoadblock(contentList, buildContext!);
+        _showPopupRoadblock(contentList,messageId,filterId, buildContext!);
       }
     }
     if (type?.toLowerCase().contains('bottomsheet')) {
       sdkPrint("BottomSheet");
       if (contentList.isNotEmpty && buildContext != null) {
-        _showBottomSheetBanner(contentList, buildContext!);
+        _showBottomSheetBanner(contentList,messageId,filterId, buildContext!);
       }
     }
 
     if (type?.toLowerCase().contains('banner')) {
       sdkPrint("BANNER");
-      final align = getAlignment(style);
-      sdkPrint('$contentList');
+      // final align = getAlignment(style);
       if (contentList.isNotEmpty && buildContext != null) {
-        _showBanner(contentList, buildContext!, align: align);
+        sdkPrint("Going in Show Banner");
+        _showBanner(contentList,messageId,filterId, buildContext!, align: "top");
       }
     }
     if (type?.toLowerCase().contains('pip') || type?.toLowerCase().contains('picture-in-picture')) {
       // final align = (style['align'] ?? 'bottom-right').toString();
+      sdkPrint("PIP STARTED");
+      sdkPrint(style.toString());
       final align = getAlignment(style);
+      sdkPrint(align);
       if (contentList.isNotEmpty && buildContext != null) {
-        _showPip(contentList, buildContext!, align: align);
+        _showPip(contentList,messageId,filterId, buildContext!, align: align);
       }
     }
     if (type?.toLowerCase().contains('floater')) {
       final align = (style['align'] ?? 'bottom-right').toString();
+      bool draggable = style['draggable'];
       if (contentList.isNotEmpty && buildContext != null) {
-        _showFloater(contentList, buildContext!, align: align);
+        _showFloater(contentList, buildContext!, align: align, draggable: draggable);
       }
     }
 
-    if (type?.toLowerCase().contains('placeholder')) {
-      final placeholderId = data['template']?['code'];
+    if (type?.toLowerCase().contains('inline')) {
+      final placeholderId = data['event']?['event_data']?["compare"];
       print("PlaceholderId $placeholderId");
       print("contentList $contentList");
       if (placeholderId != null && contentList.isNotEmpty) {
@@ -730,18 +807,58 @@ class MeSend {
 
   void _showPip(
       List<dynamic> contentList,
+      String messageId,
+      String filterId,
       BuildContext context, {
-        String align = "bottom-right", // will now include full 9 options
+        String align = "bottom-right", // supports 9 alignments
       }) {
     if (contentList.isEmpty || contentList.first is! String) return;
 
     final htmlContent = contentList.first as String;
 
-    final controller = WebViewController()
+    final controller = WebViewController();
+
+    controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..addJavaScriptChannel(
+        'InAppChannel',
+        onMessageReceived: (JavaScriptMessage message) {
+          _handleJsMessage(message.message, messageId, filterId);
+          if (Navigator.canPop(context)) {
+            Navigator.of(context).pop();
+          }
+          _onNotificationClosed();
+        },
+      )
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (url) async {
+            // Inject JS bridge for CTA clicks
+            await controller.runJavaScript('''
+            window.handleClick = function(eventType, lab, val) {
+              var message = JSON.stringify({
+                event: eventType,
+                timestamp: Date.now(),
+                data: { url: "", label: lab, value: val }
+              });
+              InAppChannel.postMessage(message);
+            };
+          ''');
+          },
+          onNavigationRequest: (request) {
+            final url = request.url;
+            if (url.startsWith('http')) {
+              _handleCta(url);
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
       ..loadHtmlString(htmlContent);
 
-    // ✅ Supports all 9 alignments
+    // Map align string to Alignment
     final alignment = {
       'top-left': Alignment.topLeft,
       'top-center': Alignment.topCenter,
@@ -785,33 +902,41 @@ class MeSend {
                           borderRadius: BorderRadius.circular(16),
                           onTap: () {
                             Navigator.of(ctx).pop();
-                            _showPopupRoadblock([htmlContent], context);
+                            _showPopupRoadblock([htmlContent], messageId, filterId, context);
+
                           },
                         ),
                       ),
                     ),
 
-                    /// ✅ Share Icon on Top-Right
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        height: 32,
-                        width: 32,
-                        decoration: BoxDecoration(
-                          color: Colors.black54, // translucent black
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            'assets/images/share.png',
-                            height: 18,
-                            width: 18,
-                            color: Colors.white, // optional: force white tint
+                    /// Share Icon on Top-Right
+                    InkWell(
+                      child: Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          height: 32,
+                          width: 32,
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/share.png',
+                              height: 18,
+                              width: 18,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      onTap: () {
+                        Navigator.of(ctx).pop();
+                        _showPopupRoadblock([htmlContent], messageId, filterId, context);
+
+                      },
+                    )
                   ],
                 ),
               ),
@@ -825,93 +950,208 @@ class MeSend {
 
 
 
+
   OverlayEntry? _floaterEntry;
 
-  void _showFloater(List<dynamic> contentList, BuildContext context, {String align = "bottom-right"}) {
+  void _showFloater(
+      List<dynamic> contentList,
+      BuildContext context, {
+        String align = "bottom-right",
+        bool draggable = false,
+      }) {
     if (contentList.isEmpty || contentList.first is! String) return;
 
     final htmlContent = contentList.first as String;
 
     final controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000)) // ✅ Transparent WebView
+      ..setBackgroundColor(Colors.transparent)
       ..loadHtmlString(htmlContent);
 
     final overlay = Overlay.of(context);
-    final alignment = {
-      'top-left': Alignment.topLeft,
-      'top-right': Alignment.topRight,
-      'bottom-left': Alignment.bottomLeft,
-      'bottom-right': Alignment.bottomRight,
-    }[align] ?? Alignment.bottomRight;
+
+    // ✅ Initial position based on alignment
+    Offset initialOffset;
+    switch (align) {
+      case "top-left":
+        initialOffset = const Offset(20, 20);
+        break;
+      case "top-right":
+        initialOffset = Offset(MediaQuery.of(context).size.width - 220, 20);
+        break;
+      case "bottom-left":
+        initialOffset = Offset(20, MediaQuery.of(context).size.height - 220);
+        break;
+      case "bottom-right":
+      default:
+        initialOffset = Offset(
+          MediaQuery.of(context).size.width - 220,
+          MediaQuery.of(context).size.height - 220,
+        );
+    }
+
+    final positionNotifier = ValueNotifier<Offset>(initialOffset);
 
     _floaterEntry = OverlayEntry(
-      builder: (ctx) => Positioned(
-        bottom: alignment.y == 1.0 ? 20 : null,
-        top: alignment.y == -1.0 ? 20 : null,
-        left: alignment.x == -1.0 ? 20 : null,
-        right: alignment.x == 1.0 ? 20 : null,
-        child: IgnorePointer(
-          ignoring: false, // ✅ allow taps
-          child: Material(
-            color: Colors.transparent, // ✅ Fully transparent
-            child: SizedBox(
-              height: 200,
-              width: 200,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: WebViewWidget(controller: controller),
+      builder: (ctx) {
+        return ValueListenableBuilder<Offset>(
+          valueListenable: positionNotifier,
+          builder: (context, offset, _) {
+            final floater = RepaintBoundary(
+              child: Container(
+                height: 200,
+                width: 200,
+                decoration: const BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                child: AbsorbPointer(
+                  absorbing: !draggable,
+                  child: ClipRect( // ✅ clean clip, no AA blending
+                    clipBehavior: Clip.hardEdge,
+                    child: WebViewWidget(controller: controller),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-      ),
+            );
+
+            return Positioned(
+              left: offset.dx,
+              top: offset.dy,
+              child: draggable
+                  ? GestureDetector(
+                onPanUpdate: (details) {
+                  positionNotifier.value = Offset(
+                    offset.dx + details.delta.dx,
+                    offset.dy + details.delta.dy,
+                  );
+                },
+                child: floater,
+              )
+                  : floater,
+            );
+          },
+        );
+      },
     );
 
     overlay.insert(_floaterEntry!);
   }
 
 
-
-
-  void _showBanner(List<dynamic> contentList, BuildContext context, {String align = "top"}) {
+  void _showBanner(
+      List<dynamic> contentList,
+      String messageId,
+      String filterId,
+      BuildContext context, {
+        String align = "top",
+      }) {
     if (contentList.isEmpty || contentList.first is! String) {
       sdkPrint("No banner HTML found.");
       return;
     }
 
-    final htmlContent = (contentList.first as String).replaceAll('[[ALIGN]]', align == 'bottom' ? 'banner-bottom' : 'banner-top');
+    sdkPrint("Show Banner Called");
 
-    final controller = WebViewController()
+    final htmlContent = (contentList.first as String)
+        .replaceAll('[[ALIGN]]', align == 'bottom' ? 'banner-bottom' : 'banner-top');
+
+    final controller = WebViewController();
+
+    controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..addJavaScriptChannel(
+        'InAppChannel',
+        onMessageReceived: (JavaScriptMessage message) {
+          _handleJsMessage(message.message, messageId, filterId);
+          if (Navigator.canPop(context)) {
+            Navigator.of(context).pop();
+          }
+          _onNotificationClosed();
+        },
+      )
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (url) async {
+            // Inject JS bridge for CTA clicks
+            await controller.runJavaScript('''
+            window.handleClick = function(eventType, lab, val) {
+              var message = JSON.stringify({
+                event: eventType,
+                timestamp: Date.now(),
+                data: { url: "", label: lab, value: val }
+              });
+              InAppChannel.postMessage(message);
+            };
+          ''');
+          },
+          onNavigationRequest: (request) {
+            final url = request.url;
+            if (url.startsWith('http')) {
+              _handleCta(url);
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
       ..loadHtmlString(htmlContent);
+
     sdkPrint("show banner");
+
     showDialog(
       context: context,
       barrierDismissible: true,
-      barrierColor: Colors.transparent, // keep background interaction
-      builder: (context) => Stack(
-        children: [
-          Align(
-            alignment: align == 'bottom' ? Alignment.bottomCenter : Alignment.topCenter,
-            child: Container(
-              height: 100,
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: WebViewWidget(controller: controller),
-              ),
+      barrierColor: Colors.transparent,
+      builder: (context) => Align(
+        alignment: align == 'bottom' ? Alignment.bottomCenter : Alignment.topCenter,
+        child: Container(
+          height: 100,
+          width: MediaQuery.of(context).size.width,
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Stack(
+              children: [
+                SizedBox.expand(
+                  child: WebViewWidget(controller: controller),
+                ),
+                // Close button
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black54,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white, size: 18),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        trackInAppEvent(
+                          messageId: messageId,
+                          event: "dismissed",
+                          completion: (success) {},
+                        );
+                        Navigator.of(context).pop();
+                        _onNotificationClosed();
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
+
   }
 
 
-
-  void _showPopupRoadblock(List<dynamic> contentList, BuildContext context) {
+  void _showPopupRoadblock(List<dynamic> contentList,String messageId,String filterId, BuildContext context) {
     String htmlContent = '';
     String imageUrl = '';
 
@@ -934,29 +1174,119 @@ class MeSend {
     }
 
     if (htmlContent.isEmpty && imageUrl.isEmpty) {
-      sdkPrint("No valid content (HTML or image) found.");
+      debugPrint("❌ No valid content (HTML or image) found.");
       return;
     }
 
     Widget contentWidget;
 
     if (htmlContent.isNotEmpty) {
-      final controller = WebViewController()
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..loadHtmlString(htmlContent)
-        ..setBackgroundColor(const Color(0x00000000));
 
-      // Inject viewport fix for iOS
+      // 1️⃣ Create platform-specific params
+      late final PlatformWebViewControllerCreationParams params;
+
       if (Platform.isIOS) {
-        controller.runJavaScript('''
-        if (!document.querySelector('meta[name=viewport]')) {
-          var meta = document.createElement('meta');
-          meta.name = 'viewport';
-          meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-          document.head.appendChild(meta);
-        }
-      ''');
+        // iOS: WebKit-specific params
+        params = WebKitWebViewControllerCreationParams(
+          allowsInlineMediaPlayback: true, // ✅ allow inline
+        );
+      } else {
+        // Android / default
+        params = const PlatformWebViewControllerCreationParams();
       }
+
+// 2️⃣ Create controller
+      final controller = WebViewController.fromPlatformCreationParams(params);
+
+      controller
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setBackgroundColor(const Color(0x00000000))
+        ..addJavaScriptChannel(
+          'InAppChannel',
+          onMessageReceived: (JavaScriptMessage message) {
+            _handleJsMessage(message.message, messageId, filterId);
+            Navigator.of(context).pop();
+            _onNotificationClosed();
+          },
+        )
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onPageFinished: (url) async {
+              // CTA bridge
+              await controller.runJavaScript('''
+          window.handleClick = function(eventType, lab, val) {
+            var message = JSON.stringify({
+              event: eventType,
+              timestamp: Date.now(),
+              data: { url: "", label: lab, value: val }
+            });
+            InAppChannel.postMessage(message);
+          };
+        ''');
+
+              // Autoplay video fix
+              await controller.runJavaScript('''
+  document.querySelectorAll('video').forEach(function(v) {
+    // Remove poster and controls
+    v.removeAttribute('poster');
+    v.controls = false;
+    v.muted = true;
+    v.playsInline = true;
+    v.autoplay = true;
+
+    // Force reload to clear poster frame (important on Android WebView)
+    try {
+      v.load();
+      v.currentTime = 0;
+    } catch (e) {
+      console.log('Video reload error', e);
+    }
+
+    // Start playing (catch autoplay block)
+    var playPromise = v.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(function(error) {
+        console.log('Autoplay blocked', error);
+      });
+    }
+
+    // Optional: keep removing poster if re-added by scripts
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(m) {
+        if (m.attributeName === 'poster') {
+          v.removeAttribute('poster');
+        }
+      });
+    });
+    observer.observe(v, { attributes: true });
+  });
+''');
+
+              // Viewport fix for iOS
+              if (Platform.isIOS) {
+                await controller.runJavaScript('''
+            if (!document.querySelector('meta[name=viewport]')) {
+              var meta = document.createElement('meta');
+              meta.name = 'viewport';
+              meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+              document.head.appendChild(meta);
+            }
+          ''');
+              }
+            },
+            onNavigationRequest: (request) {
+              final url = request.url;
+              if (url.startsWith('http')) {
+                _handleCta(url);
+                return NavigationDecision.prevent;
+              }
+              return NavigationDecision.navigate;
+            },
+          ),
+        )
+        ..loadHtmlString(htmlContent);
+
+
 
       contentWidget = WebViewWidget(controller: controller);
     } else {
@@ -968,56 +1298,61 @@ class MeSend {
       );
     }
 
-    // Show dialog with the appropriate content
+    // Show dialog with the WebView or image
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Scaffold(
-          backgroundColor: const Color.fromRGBO(0, 0, 0, 0.8),
-          body: SafeArea(
-            child: Stack(
-              children: [
-                Center(
-                  child: Container(
-                    margin: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: contentWidget,
-                    ),
+          backgroundColor: Colors.black, // full screen dark background
+          body: Stack(
+            children: [
+              // Fullscreen WebView
+              Positioned.fill(
+                child: contentWidget, // WebView or Image
+              ),
+
+              // Close button overlay
+              Positioned(
+                top: 40,
+                right: 20,
+                child: Container(
+                  width: 24, // make circle smaller
+                  height: 24,
+                  decoration: const BoxDecoration(
+                    color: Colors.black54,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    padding: EdgeInsets.zero, // removes extra space inside button
+                    constraints: const BoxConstraints(), // removes default min size (48x48)
+                    icon: const Icon(Icons.close, color: Colors.white, size: 12),
+                    onPressed: () {
+                      trackInAppEvent(
+                        messageId: messageId,
+                        event: "dismissed",
+                        completion: (success) {},
+                      );
+                      Navigator.of(context).pop();
+                      _onNotificationClosed();
+                    },
                   ),
                 ),
-                Positioned(
-                  top: 20,
-                  right: 20,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.black,
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.close,
-                          color: Colors.white, size: 20),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _onNotificationClosed();
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              )
+            ],
           ),
         );
       },
     );
   }
 
-  void _showBottomSheetBanner(List<dynamic> contentList, BuildContext context) {
+
+  void _showBottomSheetBanner(
+      List<dynamic> contentList,
+      String messageId,
+      String filterId,
+      BuildContext context,
+      ) {
     String htmlContent = '';
     String imageUrl = '';
 
@@ -1040,15 +1375,80 @@ class MeSend {
     }
 
     if (htmlContent.isEmpty && imageUrl.isEmpty) {
-      sdkPrint("No valid content (HTML or image) found.");
+      debugPrint("❌ No valid content (HTML or image) found.");
       return;
     }
 
     Widget contentWidget;
 
     if (htmlContent.isNotEmpty) {
-      final controller = WebViewController()
+      final controller = WebViewController();
+
+      controller
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setBackgroundColor(const Color(0x00000000))
+        ..addJavaScriptChannel(
+          'InAppChannel',
+          onMessageReceived: (JavaScriptMessage message) {
+            _handleJsMessage(message.message, messageId, filterId);
+            Navigator.of(context).pop();
+            _onNotificationClosed();
+          },
+        )
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onPageFinished: (url) async {
+              await controller.runJavaScript('''
+              window.handleClick = function(eventType, lab, val) {
+                var message = JSON.stringify({
+                  event: eventType,
+                  timestamp: Date.now(),
+                  data: { url: "", label: lab, value: val }
+                });
+                InAppChannel.postMessage(message);
+              };
+            ''');
+
+              // Autoplay fix
+              await controller.runJavaScript('''
+              document.querySelectorAll('video').forEach(function(v) {
+                // Remove or override poster
+                v.removeAttribute('poster'); // Option 1: remove poster
+                // v.setAttribute('poster', 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='); // Option 2: transparent pixel
+                v.muted = true;
+                v.playsInline = true;
+                v.autoplay = true;
+                var playPromise = v.play();
+                if (playPromise !== undefined) {
+                  playPromise.catch(function(error) {
+                    console.log('Autoplay blocked', error);
+                  });
+                }
+              });
+            ''');
+
+              // Viewport fix for iOS
+              if (Platform.isIOS) {
+                await controller.runJavaScript('''
+                if (!document.querySelector('meta[name=viewport]')) {
+                  var meta = document.createElement('meta');
+                  meta.name = 'viewport';
+                  meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+                  document.head.appendChild(meta);
+                }
+              ''');
+              }
+            },
+            onNavigationRequest: (request) {
+              final url = request.url;
+              if (url.startsWith('http')) {
+                _handleCta(url);
+                return NavigationDecision.prevent;
+              }
+              return NavigationDecision.navigate;
+            },
+          ),
+        )
         ..loadHtmlString(htmlContent);
 
       contentWidget = WebViewWidget(controller: controller);
@@ -1061,6 +1461,7 @@ class MeSend {
       );
     }
 
+    // Show the bottom sheet
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1077,26 +1478,34 @@ class MeSend {
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
-              padding: const EdgeInsets.all(16),
               child: Stack(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40), // Leave space for close button
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: SizedBox.expand(
                       child: contentWidget,
                     ),
                   ),
                   Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.close,
-                          color: Colors.white, size: 20),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _onNotificationClosed();
-                      },
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                        onPressed: () {
+                          trackInAppEvent(
+                            messageId: messageId,
+                            event: "dismissed",
+                            completion: (success) {},
+                          );
+                          Navigator.of(context).pop();
+                          _onNotificationClosed();
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -1107,6 +1516,129 @@ class MeSend {
       },
     );
   }
+
+
+
+
+  void _handleJsMessage(String body,String messageId,String filterId) async {
+    debugPrint("📩 JS → Flutter message: $body");
+
+    try {
+      final decoded = jsonDecode(body);
+      final event = "cta";
+      final ctaId = decoded["data"]?["value"] ?? "";
+
+      if (ctaId.isEmpty) return;
+
+      // Handle CTA
+      _handleCta(ctaId);
+
+      // Track event (equivalent to PushApp.shared.trackInAppEvent)
+      trackInAppEvent(messageId: messageId, event: event, filterId: filterId, ctaId: ctaId,completion: (success) {
+        if (success) {
+          print("✅ Tracked in-app event successfully");
+        } else {
+          print("❌ Failed to track in-app event");
+        }
+      }
+      );
+    } catch (e) {
+      debugPrint("❌ Failed to parse JS message: $e");
+    }
+  }
+
+  Future<void> _handleCta(String ctaId) async {
+    try {
+      final uri = Uri.tryParse(ctaId);
+      if (uri != null && (uri.isScheme("http") || uri.isScheme("https"))) {
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      } else {
+        debugPrint("📍 CTA String ID: $ctaId (non-URL)");
+        // TODO: handle internal CTA actions here (e.g., navigate to screen)
+      }
+    } catch (e) {
+      debugPrint("❌ Failed to handle CTA: $e");
+    }
+  }
+
+  Future<void> trackInAppEvent({
+    required String messageId,
+    required String event,
+    String? filterId,
+    String? ctaId,
+    required void Function(bool success) completion,
+  }) async {
+    final url = Uri.parse('$serverUrl/pushapp/api/v1/notification/in-app/track');
+    print("📡 trackInAppEvent → $url");
+
+    try {
+      // Get device headers
+      final deviceHeaders = await getDeviceHeaders();
+
+      final requestHeaders = {
+        'Content-Type': 'application/json',
+        ...deviceHeaders,
+      };
+
+      // Build request body
+      final body = <String, dynamic>{
+        'messageId': messageId,
+        'event': event,
+      };
+
+      if (filterId != null) body['filterId'] = filterId;
+      if (ctaId != null) body['data'] = {'ctaId': ctaId};
+
+      final jsonBody = jsonEncode(body);
+      print("✅ Payload for in-app track:\n$jsonBody");
+
+      // Send API request
+      final response = await http.post(
+        url,
+        headers: requestHeaders,
+        body: jsonBody,
+      );
+
+      print("🌐 In-app track → Status: ${response.statusCode}");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        completion(true);
+      } else {
+        print("❌ Failed response: ${response.body}");
+        completion(false);
+      }
+
+      // Optional: log to Slack or analytics if needed
+      await postApiDetailsToSlack(
+        url: url.toString(),
+        method: "POST",
+        requestHeaders: requestHeaders,
+        requestBody: body,
+        response: response,
+      );
+    } catch (e) {
+      print("❌ In-app track request failed: $e");
+
+      await postApiDetailsToSlack(
+        url: '$serverUrl/pushapp/api/v1/notification/in-app/track',
+        method: "POST",
+        requestHeaders: {'Content-Type': 'application/json'},
+        requestBody: {
+          'messageId': messageId,
+          'event': event,
+          'filterId': filterId,
+          'data': {'ctaId': ctaId},
+        },
+        response: http.Response("Exception: $e", 500),
+      );
+
+      completion(false);
+    }
+  }
+
+
 
 
 
@@ -1144,6 +1676,7 @@ class MeSend {
 
       if (response.statusCode == 200) {
         sdkPrint("Event sent successfully!");
+        _pollForNotificationData(this.userId);
       } else {
         sdkPrint("Failed to send event: ${response.body}");
         throw Exception("Failed to send event: ${response.body}");
@@ -1235,8 +1768,41 @@ class MeSend {
   }
 
 
-  Future<String?> getDeviceId() async {
-    return await AppSetId().getIdentifier();
+  static const _key = "persistent_device_id";
+  static String? _cachedDeviceId;
+
+  static Future<String> getDeviceId() async {
+    // If already loaded in memory
+    if (_cachedDeviceId != null) return _cachedDeviceId!;
+
+    final prefs = await SharedPreferences.getInstance();
+    final storedId = prefs.getString(_key);
+
+    if (storedId != null) {
+      _cachedDeviceId = storedId;
+      return _cachedDeviceId!;
+    }
+
+    // First time: generate new ID
+    final id = await AppSetId().getIdentifier();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    _cachedDeviceId = "${id}_$timestamp";
+
+    // Persist to storage
+    await prefs.setString(_key, _cachedDeviceId!);
+
+    return _cachedDeviceId!;
+  }
+
+
+  final TooltipSdk sdk = TooltipSdk();
+  Widget registerWidget({
+    required String placeholderId,
+    required Widget child,
+  }) {
+    sendEvent("widget_open", {"compare": placeholderId});
+    return sdk.registerWidget(placeholderId: placeholderId, child: child);
   }
 
 
@@ -1270,13 +1836,14 @@ class MeSend {
       });
 
     } else if (Platform.isIOS) {
+      final deviceId = await getDeviceId();
       final iosInfo = await _deviceInfoPlugin.iosInfo;
       headers.addAll({
         'X-Device-Model': iosInfo.model,
         'X-OS-Name': 'IOS',
         'X-OS-Version': iosInfo.systemVersion,
         'X-System-Name': iosInfo.systemName,
-        'X-Device-ID': iosInfo.identifierForVendor ?? '',
+        'X-Device-ID': deviceId ?? '',
         'X-Device-Name': iosInfo.name,
       });
     }
@@ -1315,22 +1882,22 @@ class SocketService {
   }
 
   Future<void> sendMessageToStack(String message) async{
-    const slackWebhookUrl = "https://hooks.slack.com/services/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";
-
-    final payload = {
-      "text": message
-    };
-
-    final res = await http.post(
-      Uri.parse(slackWebhookUrl),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(payload),
-    );
-
-    if (res.statusCode != 200) {
-      sdkPrint("Failed to send message to Slack: ${res.body}");
-      throw Exception("Failed to send message to Slack: ${res.body}");
-    }
+    // const slackWebhookUrl = "https://hooks.slack.com/services/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";
+    //
+    // final payload = {
+    //   "text": message
+    // };
+    //
+    // final res = await http.post(
+    //   Uri.parse(slackWebhookUrl),
+    //   headers: {"Content-Type": "application/json"},
+    //   body: jsonEncode(payload),
+    // );
+    //
+    // if (res.statusCode != 200) {
+    //   sdkPrint("Failed to send message to Slack: ${res.body}");
+    //   throw Exception("Failed to send message to Slack: ${res.body}");
+    // }
   }
 
   void _connectToSocket() {
@@ -1370,12 +1937,12 @@ class SocketService {
   void _sendAuthMessage() async{
     if (_channel != null && _userId != null) {
       sdkPrint("Auth Called");
-      var deviceId = "";
-      if (Platform.isAndroid) {
-      } else if (Platform.isIOS) {
-        final iosInfo = await _deviceInfoPlugin.iosInfo;
-        deviceId = iosInfo.identifierForVendor ?? '';
-      }
+      var deviceId = await MeSend.getDeviceId();
+      // if (Platform.isAndroid) {
+      // } else if (Platform.isIOS) {
+      //   final iosInfo = await _deviceInfoPlugin.iosInfo;
+      //   deviceId = iosInfo.identifierForVendor ?? '';
+      // }
       sdkPrint(_userId!+"_"+deviceId);
       final authMessage = {
         'type': 'auth',
@@ -1615,19 +2182,68 @@ class _MeSendWidgetState extends State<MeSendWidget> {
   void initState() {
     super.initState();
 
-    // 🔔 1. Send widget open event
     widget.meSend.sendEvent('widget_open', {
-      'placeholder_id': widget.placeholderId,
+      'compare': widget.placeholderId,
     });
 
-    // 🧠 2. Register listener for placeholder content
     widget.meSend.registerPlaceholderListener(widget.placeholderId, _onContentReceived);
+
+    // Initialize controller immediately with all settings
+    _initializeWebViewController();
   }
 
-  // 📥 Called when SDK receives content for this placeholder
+  void _initializeWebViewController() {
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.transparent) // Ensure background is transparent
+
+    // Configure the Navigation Delegate
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (url) async {
+            // FIX 1: Inject CSS to hide scrollbars and ensure content fits
+            await _controller!.runJavaScript('''
+              document.body.style.overflow = 'hidden';
+              document.body.style.margin = '0';
+              document.documentElement.style.overflow = 'hidden';
+            ''');
+
+            // ⭐ FIX 2: Force scroll to the very top (0, 0)
+            await _controller!.runJavaScript('window.scrollTo(0, 0);');
+          },
+        ),
+      );
+  }
+
   void _onContentReceived(List<dynamic> contentList) {
     if (contentList.isEmpty || contentList.first is! String) return;
-    final html = contentList.first as String;
+
+    final rawHtml = contentList.first as String;
+
+    // Wrap HTML with viewport and essential CSS to prevent unwanted initial margins/behavior
+    final html = '''
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+          <style>
+              body, html { 
+                  margin: 0; 
+                  padding: 0; 
+                  /* Ensure the HTML body is not taller than its content */
+                  height: 100%; 
+                  width: 100%;
+              }
+          </style>
+      </head>
+      <body>
+          $rawHtml
+      </body>
+      </html>
+    ''';
+
+
+    if (!mounted) return;
 
     setState(() {
       _htmlContent = html;
@@ -1652,17 +2268,15 @@ class _MeSendWidgetState extends State<MeSendWidget> {
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: _htmlContent != null
             ? WebViewWidget(
-          controller: _controller ??= WebViewController()
-            ..setJavaScriptMode(JavaScriptMode.unrestricted)
-            ..loadHtmlString(_htmlContent!),
+          // Controller is now guaranteed to be non-null after initState
+          controller: _controller!,
         )
-            : const Center(child: CircularProgressIndicator()),
+            : const Center(child: Spacer()),
       ),
     );
   }
@@ -1692,7 +2306,7 @@ class MeSendRouteObserver extends NavigatorObserver {
       }
       // sdkPrint("SDK: Page Opened -> $pageName");
       await Future.delayed(Duration(seconds: 5));
-      _meSend!.sendEvent("page_open", {"page": "login"});
+      // _meSend!.sendEvent("page_open", {"page": "login"});
     }
 
     // Send this info to analytics/logging server if needed
@@ -1725,4 +2339,278 @@ class MeSendRouteObserver extends NavigatorObserver {
     }
   }
 }
+
+class TooltipStyle {
+  final String line1;
+  final String line2;
+  final String bgColor;
+  final String line1Color;
+  final String line1Icon;
+  final double line1Size;
+  final double width;
+  final String line2Color;
+  final double line2Size;
+  final List<String> line1TextStyles; // ✅ added
+  final List<String> line2TextStyles; // ✅ added
+
+  TooltipStyle({
+    required this.line1,
+    required this.line2,
+    required this.bgColor,
+    required this.line1Color,
+    required this.line1Icon,
+    required this.line1Size,
+    required this.width,
+    required this.line2Color,
+    required this.line2Size,
+    required this.line1TextStyles, // ✅ added
+    required this.line2TextStyles, // ✅ added
+  });
+
+  /// 👇 Put the decoder inside the class
+  static String decodeHtmlEntity(String input) {
+    final regex = RegExp(r'&#(\d+);');
+    return input.replaceAllMapped(regex, (match) {
+      final codePoint = int.tryParse(match.group(1)!);
+      if (codePoint != null) {
+        return String.fromCharCode(codePoint);
+      }
+      return match.group(0)!;
+    });
+  }
+
+  factory TooltipStyle.fromJson(Map<String, dynamic> json) {
+    return TooltipStyle(
+      line1: json["line_1"] ?? "",
+      line2: json["line_2"] ?? "",
+      line1Icon: json["line1_icon"] != null
+          ? TooltipStyle.decodeHtmlEntity(json["line1_icon"])
+          : "",
+      bgColor: (json["bg_color"] as String?)?.isNotEmpty == true
+          ? json["bg_color"]
+          : "#000000",
+      line1Color: (json["line1_font_color"] as String?)?.isNotEmpty == true
+          ? json["line1_font_color"]
+          : "#FFFFFF",
+      line1Size: (json["line1_font_size"] ?? 14).toDouble(),
+      line2Color: (json["line2_font_color"] as String?)?.isNotEmpty == true
+          ? json["line2_font_color"]
+          : "#FFFFFF",
+      line2Size: (json["line2_font_size"] ?? 12).toDouble(),
+      width: (json["width"] ?? 70).toDouble(),
+      line1TextStyles: (json["line1_text_styles"] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ??
+          [], // ✅ safe parse
+      line2TextStyles: (json["line2_text_styles"] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ??
+          [], // ✅ safe parse
+    );
+  }
+
+  @override
+  String toString() {
+    return "TooltipStyle(line1='$line1', line2='$line2', "
+        "bgColor=$bgColor, line1Color=$line1Color, line1Size=$line1Size, "
+        "line2Color=$line2Color, line2Size=$line2Size, "
+        "line1TextStyles=$line1TextStyles, line2TextStyles=$line2TextStyles)";
+  }
+}
+
+
+
+class TooltipSdk extends ChangeNotifier {
+  static final TooltipSdk _instance = TooltipSdk._internal();
+  factory TooltipSdk() => _instance;
+  TooltipSdk._internal();
+
+  final Map<String, TooltipStyle> _tooltipData = {};
+  final Map<String, SuperTooltipController> _controllers = {};
+  final Map<String, Widget> _tooltipWidgets = {};
+  VoidCallback? onTooltipDismissedCallback;
+
+  void _handleTooltipDismissed(String placeholderId) {
+    debugPrint("🟢 Tooltip dismissed for $placeholderId");
+    if (onTooltipDismissedCallback != null) {
+      onTooltipDismissedCallback!();
+    }
+  }
+
+
+  Color _parseColor(String hex) {
+    hex = hex.replaceAll("#", "");
+    if (hex.length == 6) hex = "FF$hex";
+    return Color(int.parse(hex, radix: 16));
+  }
+
+  /// Register a widget with a placeholder ID
+  Widget registerWidget({
+    required String placeholderId,
+    required Widget child,
+  }) {
+    final controller = SuperTooltipController();
+    _controllers[placeholderId] = controller;
+    print('Saved controller hash: ${identityHashCode(controller)}');
+
+    return AnimatedBuilder(
+      animation: this, // listens to notifyListeners()
+      builder: (context, _) {
+        final style = _tooltipData[placeholderId];
+        final screenWidth = MediaQuery.of(context).size.width;
+
+        // Helper function to build TextStyle from styles list
+        TextStyle _buildTextStyle({
+          required double fontSize,
+          required String color,
+          required List<String> styles,
+        }) {
+          bool isBold = styles.contains("bold");
+          bool isItalic = styles.contains("italic");
+          bool isUnderline = styles.contains("underline");
+
+          final parsedColor = _parseColor(color);
+
+          return TextStyle(
+            fontSize: fontSize,
+            color: parsedColor,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+            fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+            decoration:
+            isUnderline ? TextDecoration.underline : TextDecoration.none,
+            decorationColor: parsedColor, // ✅ underline matches text color
+            decorationThickness: 1.5, // ✅ optional: makes underline more visible
+          );
+        }
+
+        final content = style != null
+            ? SizedBox(
+          width: screenWidth * (style.width / 100),
+          child: Stack(
+            children: [
+              // 👇 Actual content
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (style.line1.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (style.line1Icon.isNotEmpty)
+                              Text(
+                                style.line1Icon,
+                                style: _buildTextStyle(
+                                  fontSize: style.line1Size,
+                                  color: style.line1Color,
+                                  styles: style.line1TextStyles,
+                                ),
+                              ),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                style.line1,
+                                style: _buildTextStyle(
+                                  fontSize: style.line1Size,
+                                  color: style.line1Color,
+                                  styles: style.line1TextStyles,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (style.line2.isNotEmpty)
+                      Text(
+                        style.line2,
+                        style: _buildTextStyle(
+                          fontSize: style.line2Size,
+                          color: style.line2Color,
+                          styles: style.line2TextStyles,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+              // 👇 Close button at top right
+              Positioned(
+                top: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: () {
+                    controller.hideTooltip(); // closes tooltip
+                    TooltipSdk()._handleTooltipDismissed(placeholderId);
+                  },
+                  child: const Icon(
+                    Icons.close,
+                    size: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+            : const SizedBox.shrink();
+
+        return SuperTooltip(
+          controller: controller,
+          showBarrier: true,
+          backgroundColor: style != null
+              ? _parseColor(style.bgColor)
+              : Colors.transparent,
+          content: content,
+          child: child,
+        );
+      },
+    );
+
+
+
+
+  }
+
+
+  /// Process API response and update tooltip styles
+  void processApiResponse(Map<String, dynamic> response) {
+    final results = response["results"] as List?;
+    if (results == null || results.isEmpty) return;
+
+    for (var item in results) {
+      final compareId = item["event"]?["event_data"]?["compare"];
+      final styleJson = item["template"]?["style"];
+
+      if (compareId != null && styleJson != null) {
+        _tooltipData[compareId] = TooltipStyle.fromJson(styleJson);
+        debugPrint("✅ Tooltip data loaded for $compareId");
+      }
+    }
+
+    notifyListeners(); // triggers AnimatedBuilder to rebuild content
+  }
+
+
+  /// Show tooltip for a registered placeholder
+  Future<void> showTooltipFor(String placeholderId) async {
+    final controller = _controllers[placeholderId];
+    print('Retrieved controller hash: ${identityHashCode(controller)}');
+    if (controller != null) {
+      debugPrint("🚀 Showing tooltip for $placeholderId");
+      await controller.showTooltip();
+    } else {
+      debugPrint("⚠️ No controller found for $placeholderId");
+    }
+  }
+}
+
+
+
+
+
 
