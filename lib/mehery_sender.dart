@@ -174,19 +174,15 @@ class MeSend {
         String? firebaseToken = await messaging.getToken();
         if (firebaseToken != null) {
           await prefs.setString('device_token', firebaseToken);
-          await sendTokenToServer('android', firebaseToken!);
+          await sendTokenToServer('android', firebaseToken);
         } else {
           sdkPrint("Failed to retrieve Firebase token on Android.");
         }
       } else if (Platform.isIOS) {
         String? apnsToken = await messaging.getAPNSToken();
         await prefs.setString('device_token', apnsToken!);
-        if (apnsToken != null) {
-          await sendTokenToServer('ios', apnsToken);
-        } else {
-          sdkPrint("Failed to retrieve APNs token on iOS.");
-        }
-      } else {
+        await sendTokenToServer('ios', apnsToken);
+            } else {
         sdkPrint("Unsupported platform.");
       }
     } catch (e) {
@@ -531,7 +527,7 @@ class MeSend {
   void sdkPrint(String? message){
     debugPrint(message);
     if(message != null) {
-      sendMessageToStack(message!);
+      sendMessageToStack(message);
     }
   }
 
@@ -1420,7 +1416,7 @@ class MeSend {
                 v.autoplay = true;
                 var playPromise = v.play();
                 if (playPromise !== undefined) {
-                  playPromise.catch(function(error) {
+                  playPromise.catch(funcion(error) {
                     console.log('Autoplay blocked', error);
                   });
                 }
@@ -2451,7 +2447,7 @@ class TooltipSdk extends ChangeNotifier {
   }) {
     final controller = SuperTooltipController();
     _controllers[placeholderId] = controller;
-    print('Saved controller hash: ${identityHashCode(controller)}');
+    // print('Saved controller hash: ${identityHashCode(controller)}');
 
     return AnimatedBuilder(
       animation: this, // listens to notifyListeners()
@@ -2460,7 +2456,7 @@ class TooltipSdk extends ChangeNotifier {
         final screenWidth = MediaQuery.of(context).size.width;
 
         // Helper function to build TextStyle from styles list
-        TextStyle _buildTextStyle({
+        TextStyle buildTextStyle({
           required double fontSize,
           required String color,
           required List<String> styles,
@@ -2504,7 +2500,7 @@ class TooltipSdk extends ChangeNotifier {
                             if (style.line1Icon.isNotEmpty)
                               Text(
                                 style.line1Icon,
-                                style: _buildTextStyle(
+                                style: buildTextStyle(
                                   fontSize: style.line1Size,
                                   color: style.line1Color,
                                   styles: style.line1TextStyles,
@@ -2514,7 +2510,7 @@ class TooltipSdk extends ChangeNotifier {
                             Flexible(
                               child: Text(
                                 style.line1,
-                                style: _buildTextStyle(
+                                style: buildTextStyle(
                                   fontSize: style.line1Size,
                                   color: style.line1Color,
                                   styles: style.line1TextStyles,
@@ -2528,7 +2524,7 @@ class TooltipSdk extends ChangeNotifier {
                     if (style.line2.isNotEmpty)
                       Text(
                         style.line2,
-                        style: _buildTextStyle(
+                        style: buildTextStyle(
                           fontSize: style.line2Size,
                           color: style.line2Color,
                           styles: style.line2TextStyles,
@@ -2599,7 +2595,7 @@ class TooltipSdk extends ChangeNotifier {
   /// Show tooltip for a registered placeholder
   Future<void> showTooltipFor(String placeholderId) async {
     final controller = _controllers[placeholderId];
-    print('Retrieved controller hash: ${identityHashCode(controller)}');
+    // print('Retrieved controller hash: ${identityHashCode(controller)}');
     if (controller != null) {
       debugPrint("🚀 Showing tooltip for $placeholderId");
       await controller.showTooltip();
